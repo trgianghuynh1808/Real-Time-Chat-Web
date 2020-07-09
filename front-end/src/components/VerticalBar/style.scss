@@ -1,3 +1,5 @@
+@import "App.scss";
+
 .vertical-bar {
   padding: 20px;
   border-right: 2px solid #dfdfdf;
@@ -11,7 +13,7 @@
   }
 
   &__icon {
-    color: #a2a2a2;
+    color: $icon-color;
   }
 
   &__list-menu {
@@ -21,7 +23,7 @@
   &__menu-item {
     padding: 8px 10px;
 
-    border-bottom: 1px solid gainsboro;
+    border-bottom: 1px solid $border-color;
     color: green;
 
     transition: 0.3s;
@@ -36,7 +38,7 @@
 
     &--active {
       color: white;
-      background-color: green;
+      background-color: #239b56;
       pointer-events: none;
     }
   }

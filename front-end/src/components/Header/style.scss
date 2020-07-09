@@ -1,0 +1,11 @@
+@import "App.scss";
+
+.header {
+  padding: 20px;
+
+  border-bottom: 1px solid $border-color;
+
+  &__icon {
+    color: green;
+  }
+}
