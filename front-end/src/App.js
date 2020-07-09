@@ -1,7 +1,8 @@
 import React, { Suspense } from "react";
-import { BrowserRouter, Route, Switch, Redirect, Link } from "react-router-dom";
+import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 
 import "./App.scss";
+import "assets/styles/global.scss";
 import NotFound from "components/NotFound";
 import Layout from "components/Layout";
 

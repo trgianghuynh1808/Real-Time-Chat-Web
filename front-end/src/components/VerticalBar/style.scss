@@ -1,0 +1,43 @@
+.vertical-bar {
+  padding: 20px;
+  border-right: 2px solid #dfdfdf;
+  height: 100vh;
+
+  &__avatar-circle {
+    vertical-align: middle;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+  }
+
+  &__icon {
+    color: #a2a2a2;
+  }
+
+  &__list-menu {
+    margin-top: 30px;
+  }
+
+  &__menu-item {
+    padding: 8px 10px;
+
+    border-bottom: 1px solid gainsboro;
+    color: green;
+
+    transition: 0.3s;
+
+    & span {
+      display: inline-block;
+    }
+
+    &:not(&--active):hover {
+      background-color: #f2f3f4;
+    }
+
+    &--active {
+      color: white;
+      background-color: green;
+      pointer-events: none;
+    }
+  }
+}
