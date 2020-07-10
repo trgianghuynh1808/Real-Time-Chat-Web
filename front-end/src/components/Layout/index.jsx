@@ -14,8 +14,8 @@ const Layout = ({ children }) => {
         <Header />
         <div className="container-fluid">
           <div className="row">
-            <div className="col-10">{children}</div>
-            <div className="col-2">
+            <div className="col-9 none-padding">{children}</div>
+            <div className="col-3 none-padding">
               <FriendList />
             </div>
           </div>

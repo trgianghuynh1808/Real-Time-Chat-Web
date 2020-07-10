@@ -1,7 +1,13 @@
 import React from "react";
 
+import ChatDetail from "../components/ChatDetail";
+
 const MainPage = () => {
-  return <div>This is main page</div>;
+  return (
+    <div>
+      <ChatDetail />
+    </div>
+  );
 };
 
 export default MainPage;

@@ -26,6 +26,7 @@
     width: 40px;
     height: 40px;
     border-radius: 50%;
+    position: relative;
   }
 
   &__friend-info {
@@ -44,10 +45,29 @@
 
   &__item {
     transition: 0.3s;
-    padding: 10px 0px;
+    padding: 20px 0px;
 
     &--active {
       background-color: #f2f3f4;
+    }
+
+    .dot {
+      height: 14px;
+      width: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      position: absolute;
+      right: -25px;
+      bottom: -3px;
+      border: 2px solid white;
+
+      &--online {
+        background-color: #2ecc71;
+      }
+
+      &--offline {
+        background-color: #bbb;
+      }
     }
   }
 }

@@ -11,19 +11,20 @@ const FriendList = ({ friendList }) => {
             }`}
             key={index}
           >
-            <div className="col-2">
+            <div className="col-1 position-relative">
               <img
                 className="friend-list__avatar-circle"
                 src={friend.avatar}
                 alt="user-def"
               />
+              <span className="dot dot--online"></span>
             </div>
-            <div className="col-7 ml-3 cursor-pointer">
+            <div className="col-9 ml-3 cursor-pointer">
               <div className="font-weight-bold">{friend.name}</div>
               <div className="friend-list__prev-chat">{friend.statusMsg}</div>
             </div>
             <div className="col-1">
-              <i class="fas fa-ellipsis-v friend-list__icon cursor-pointer"></i>
+              <i className="fas fa-ellipsis-v friend-list__icon cursor-pointer"></i>
             </div>
           </div>
         );

@@ -7,19 +7,19 @@ import Images from "constants/images";
 
 const FRIEND_LIST = [
   {
-    name: "Giang",
+    name: "Hoàng Thượng",
     statusMsg: "Hn t bùn :(",
-    avatar: Images.AVATAR_DEF,
+    avatar: Images.AVATAR_DEF1,
   },
   {
-    name: "Giang",
+    name: "Hoàng Thượng",
     statusMsg: "Hn t bùn :(",
-    avatar: Images.AVATAR_DEF,
+    avatar: Images.AVATAR_DEF1,
   },
   {
-    name: "Giang",
+    name: "Hoàng Thượng",
     statusMsg: "Hn t bùn :(",
-    avatar: Images.AVATAR_DEF,
+    avatar: Images.AVATAR_DEF1,
   },
 ];
 
