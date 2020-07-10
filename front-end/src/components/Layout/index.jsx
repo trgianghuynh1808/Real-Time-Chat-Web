@@ -2,6 +2,7 @@ import React from "react";
 
 import VerticalBar from "components/VerticalBar";
 import Header from "components/Header";
+import FriendList from "components/FriendList";
 
 const Layout = ({ children }) => {
   return (
@@ -11,7 +12,14 @@ const Layout = ({ children }) => {
       </div>
       <div className="col-10 none-padding">
         <Header />
-        {children}
+        <div className="container-fluid">
+          <div className="row">
+            <div className="col-10">{children}</div>
+            <div className="col-2">
+              <FriendList />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

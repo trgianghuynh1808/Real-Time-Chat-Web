@@ -3,7 +3,7 @@
 .vertical-bar {
   padding: 20px;
   border-right: 2px solid #dfdfdf;
-  height: 100vh;
+  height: 98vh;
 
   &__avatar-circle {
     vertical-align: middle;
@@ -21,8 +21,8 @@
   }
 
   &__menu-item {
-    padding: 8px 10px;
-
+    padding: 10px;
+    font-size: 20px;
     border-bottom: 1px solid $border-color;
     color: green;
 
