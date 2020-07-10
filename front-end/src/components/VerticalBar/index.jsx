@@ -8,7 +8,7 @@ import { MENU_ITEM_LIST } from "constants/global";
 const VerticalBar = () => {
   return (
     <div className="vertical-bar">
-      <InfoUser fullName={"Giang Huynh"} nickName="giangkute" />
+      <InfoUser fullName={"Giang Huynh"} statusMsg="Hn t ..." />
       <ListItemMenu menuItems={MENU_ITEM_LIST} />
     </div>
   );

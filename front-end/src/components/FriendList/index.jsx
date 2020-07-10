@@ -8,17 +8,17 @@ import Images from "constants/images";
 const FRIEND_LIST = [
   {
     name: "Giang",
-    prevMsg: "Hello",
+    statusMsg: "Hn t bùn :(",
     avatar: Images.AVATAR_DEF,
   },
   {
     name: "Giang",
-    prevMsg: "Hello",
+    statusMsg: "Hn t bùn :(",
     avatar: Images.AVATAR_DEF,
   },
   {
     name: "Giang",
-    prevMsg: "Hello",
+    statusMsg: "Hn t bùn :(",
     avatar: Images.AVATAR_DEF,
   },
 ];

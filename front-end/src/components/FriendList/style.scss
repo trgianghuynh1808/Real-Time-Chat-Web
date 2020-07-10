@@ -41,4 +41,13 @@
     color: $icon-color;
     font-size: 18px;
   }
+
+  &__item {
+    transition: 0.3s;
+    padding: 10px 0px;
+
+    &--active {
+      background-color: #f2f3f4;
+    }
+  }
 }

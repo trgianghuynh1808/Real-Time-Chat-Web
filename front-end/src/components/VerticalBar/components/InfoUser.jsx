@@ -2,7 +2,7 @@ import React from "react";
 
 import Images from "constants/images";
 
-const InfoUser = ({ fullName, nickName }) => {
+const InfoUser = ({ fullName, statusMsg }) => {
   return (
     <div className="container">
       <div className="row justify-content-between vertical-bar__icon">
@@ -17,7 +17,7 @@ const InfoUser = ({ fullName, nickName }) => {
         />
         <div className="col-12 text-center mt-3">
           <div className="font-weight-bold">{fullName}</div>
-          <div>{nickName}</div>
+          <div>{statusMsg}</div>
         </div>
       </div>
     </div>
