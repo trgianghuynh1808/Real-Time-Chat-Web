@@ -4,23 +4,23 @@ import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import "./App.scss";
 import "assets/styles/global.scss";
 import NotFound from "components/NotFound";
-import Layout from "components/Layout";
 
 const Chat = React.lazy(() => import("features/Chat"));
+const Login = React.lazy(() => import("features/Login"));
 
 function App() {
   return (
     <div className="chat-app">
       <Suspense fallback={<div>Loading...</div>}>
         <BrowserRouter>
-          <Layout>
-            <Switch>
-              <Redirect exact from="/" to="/chat" />
+          <Switch>
+            <Redirect exact from="/" to="/account/login" />
 
-              <Route path="/chat" component={Chat} />
-              <Route component={NotFound} />
-            </Switch>
-          </Layout>
+            <Route path="/chat" component={Chat} />
+            <Route path="/account" component={Login} />
+
+            <Route component={NotFound} />
+          </Switch>
         </BrowserRouter>
       </Suspense>
     </div>
