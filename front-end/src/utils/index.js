@@ -20,3 +20,9 @@ export const formatAMPM = () => {
 export const getMsgByRespCode = (code) => {
   return get(code, RESP_CODE);
 };
+
+export const doFunctionWithEnter = (event, func) =>
+  typeof event === "object" &&
+  event.key === "Enter" &&
+  typeof func === "function" &&
+  func();

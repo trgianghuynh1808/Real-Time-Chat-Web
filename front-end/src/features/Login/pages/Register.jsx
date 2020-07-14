@@ -1,8 +1,10 @@
 import React from "react";
 import { FastField, Form, Formik } from "formik";
+import { useHistory } from "react-router-dom";
 
 import InputField from "components/FormFields/InputField";
 import userApi from "api/userApi";
+import { showInfoToast } from "libs/toast-libs";
 
 const Register = () => {
   const initialValues = {
@@ -11,14 +13,31 @@ const Register = () => {
     pass: "",
     confirmPass: "",
   };
+  const history = useHistory();
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={async (values) => {
-        console.log("submit", values);
-        const { username, email, pass: password } = values;
-        await userApi.register({ username, email, password });
+      onSubmit={(values, { resetForm }) => {
+        const { username, email, pass: password, confirmPass } = values;
+
+        if (password !== confirmPass) {
+          showInfoToast("Xác nhận mật khẩu sai! Hãy thử lại.");
+
+          return resetForm();
+        }
+
+        const fetchRegister = async () => {
+          try {
+            await userApi.register({ username, email, password });
+            history.push("/account/login");
+          } catch (err) {
+            console.log(err);
+          }
+        };
+
+        fetchRegister();
+        resetForm();
       }}
     >
       {(formik) => {

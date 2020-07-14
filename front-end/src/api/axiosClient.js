@@ -22,8 +22,6 @@ axiosClient.interceptors.request.use(async (config) => {
 });
 axiosClient.interceptors.response.use(
   (response) => {
-    console.log("test resp", response);
-
     if (response && response.data) {
       const message = getMsgByRespCode(response.data.message);
       showSuccessToast(message);
@@ -33,7 +31,6 @@ axiosClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    // Handle errors
     const { data } = error.response;
     if (data) {
       const { message } = data;
