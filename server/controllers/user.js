@@ -24,9 +24,6 @@ export const getUsers = async (req, res) => {
 export const registerUser = async (req, res) => {
   const { email, username, password } = req.body;
 
-  if (!validateEmail(email))
-    return respFailure({ message: "EMAIL_INVALID" }, res);
-
   if (!validatePassword(password))
     return respFailure({ message: "PASSWORD_INVALID" }, res);
 
@@ -97,8 +94,7 @@ export const loginUser = async (req, res) => {
 export const forgotPassword = async (req, res) => {
   const { email } = req.query;
 
-  if (!email || !validateEmail(email))
-    return respFailure({ message: "EMAIL_INVALID" }, res);
+  if (!email) return respFailure({ message: "EMAIL_INVALID" }, res);
 
   const user = await User.findOne({ email });
   if (!user) return respFailure({ message: "USER_NOT_EXISTS" }, res);

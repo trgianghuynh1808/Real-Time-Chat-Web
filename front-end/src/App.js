@@ -1,5 +1,7 @@
 import React, { Suspense } from "react";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 import "./App.scss";
 import "assets/styles/global.scss";
@@ -22,6 +24,7 @@ function App() {
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>
+        <ToastContainer />
       </Suspense>
     </div>
   );
