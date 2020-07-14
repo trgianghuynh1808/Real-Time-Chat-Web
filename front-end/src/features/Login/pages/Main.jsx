@@ -26,6 +26,7 @@ const Login = () => {
                 type="password"
                 name="pass"
                 placeholder="Nhập mật khẩu"
+                autoComplete="new-password"
               />
               <span className="focus-input100" />
             </div>
