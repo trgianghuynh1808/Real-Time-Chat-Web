@@ -1,73 +1,99 @@
 import React from "react";
+import { FastField, Form, Formik } from "formik";
+
+import InputField from "components/FormFields/InputField";
+import userApi from "api/userApi";
 
 const Register = () => {
+  const initialValues = {
+    username: "",
+    email: "",
+    pass: "",
+    confirmPass: "",
+  };
+
   return (
-    <div className="limiter">
-      <div className="container-login100">
-        <div className="wrap-login100">
-          <div className="login100-form-title">
-            <span className="login100-form-title-1">Đăng Ký</span>
+    <Formik
+      initialValues={initialValues}
+      onSubmit={async (values) => {
+        console.log("submit", values);
+        const { username, email, pass: password } = values;
+        await userApi.register({ username, email, password });
+      }}
+    >
+      {(formik) => {
+        return (
+          <div className="limiter">
+            <div className="container-login100">
+              <div className="wrap-login100">
+                <div className="login100-form-title">
+                  <span className="login100-form-title-1">Đăng Ký</span>
+                </div>
+                <Form className="login100-form validate-form">
+                  <FastField
+                    component={InputField}
+                    label={"Tài Khoản"}
+                    name={"username"}
+                    placeholder={"Nhập tài khoản"}
+                    required
+                  />
+                  <FastField
+                    component={InputField}
+                    label={"Email"}
+                    name={"email"}
+                    placeholder={"Nhập email"}
+                    type={"email"}
+                  />
+                  <FastField
+                    component={InputField}
+                    label={"Mật Khẩu"}
+                    name={"pass"}
+                    placeholder={"Nhập mật khẩu"}
+                    type={"password"}
+                    autoComplete={"new-password"}
+                    subTitle={
+                      "* Mật khẩu cần có ít nhất 8 ký tự. Có ít nhất một chữ hoa, một chứ thường, một số."
+                    }
+                    pattern={"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"}
+                  />
+                  <div className="mt-2 w-100">
+                    <FastField
+                      component={InputField}
+                      label={"Nhập Lại Mật Khẩu"}
+                      name={"confirmPass"}
+                      placeholder={"Nhập lại mật khẩu"}
+                      type={"password"}
+                      autoComplete={"new-password"}
+                    />
+                  </div>
+                  <div className="flex-sb-m w-full p-b-30">
+                    <div className="contact100-form-checkbox">
+                      <a href="/account/login" className="txt1">
+                        Đã có tài khoản?
+                      </a>
+                    </div>
+                    <div>
+                      <a href="/account/forgot-password" className="txt1">
+                        Quên mật khẩu?
+                      </a>
+                    </div>
+                  </div>
+                  <div className="container-login100-form-btn">
+                    <button
+                      className="login100-form-btn"
+                      type="submit"
+                      disabled={!(formik.isValid && formik.dirty)}
+                    >
+                      Đăng ký
+                    </button>
+                  </div>
+                </Form>
+              </div>
+            </div>
           </div>
-          <form className="login100-form validate-form">
-            <div className="wrap-input100 validate-input m-b-26">
-              <span className="label-input100">Tài Khoản</span>
-              <input
-                className="input100"
-                type="text"
-                name="username"
-                placeholder="Nhập tài khoản"
-              />
-              <span className="focus-input100" />
-            </div>
-            <div className="wrap-input100 validate-input m-b-26">
-              <span className="label-input100">Email</span>
-              <input
-                className="input100"
-                type="email"
-                name="email"
-                placeholder="Nhập email"
-              />
-              <span className="focus-input100" />
-            </div>
-            <div className="wrap-input100 validate-input m-b-18">
-              <span className="label-input100">Mật Khẩu</span>
-              <input
-                className="input100"
-                type="password"
-                name="pass"
-                placeholder="Nhập mật khẩu"
-              />
-              <span className="focus-input100" />
-            </div>
-            <div className="wrap-input100 validate-input m-b-18">
-              <span className="label-input100">Nhập Lại Mật Khẩu</span>
-              <input
-                className="input100"
-                type="password"
-                name="confirmPass"
-                placeholder="Nhập lại mật khẩu"
-              />
-              <span className="focus-input100" />
-            </div>
-            <div className="flex-sb-m w-full p-b-30">
-              <div className="contact100-form-checkbox">
-                <a href="/account/login" className="txt1">
-                  Đã có tài khoản?
-                </a>
-              </div>
-              <div>
-                <a href="/account/forgot-password" className="txt1">
-                  Quên mật khẩu?
-                </a>
-              </div>
-            </div>
-            <div className="container-login100-form-btn">
-              <button className="login100-form-btn">Đăng ký</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+        );
+      }}
+    </Formik>
   );
 };
 
