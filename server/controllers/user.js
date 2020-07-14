@@ -1,0 +1,141 @@
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
+
+import User from "../models/User";
+import { respFailure, respSuccess } from "../utils/server";
+import {
+  validateEmail,
+  validatePassword,
+  generateRandomPassword,
+} from "../utils";
+
+export const getUsers = async (req, res) => {
+  return User.find()
+    .then((users) => {
+      return respSuccess({ message: "GET_USERS_SUCCESS", data: users }, res);
+    })
+    .catch((error) => {
+      return respFailure({ message: "SERVER_ERROR", error }, res);
+    });
+};
+
+export const registerUser = async (req, res) => {
+  const { email, username, password } = req.body;
+
+  if (!validateEmail(email))
+    return respFailure({ message: "EMAIL_INVALID" }, res);
+
+  if (!validatePassword(password))
+    return respFailure({ message: "PASSWORD_INVALID" }, res);
+
+  const existsUser = await User.findOne().or([{ username }, { email }]);
+  if (existsUser) return respFailure({ message: "USER_ALREADY_EXISTS" }, res);
+
+  const hashPassword = await bcrypt.hashSync(
+    password,
+    parseInt(process.env.SALT_ROUNDS)
+  );
+  const newUser = new User({
+    _id: mongoose.Types.ObjectId(),
+    email,
+    username,
+    password: hashPassword,
+  });
+
+  return newUser
+    .save()
+    .then((newUser) => {
+      return respSuccess({ message: "REGISTER_SUCCESS", data: newUser }, res);
+    })
+    .catch((error) => {
+      return respFailure({ message: "SERVER_ERROR", error }, res);
+    });
+};
+
+export const loginUser = async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password)
+    return respFailure({ message: "USERNAME_OR_PASSWORD_INVALID" }, res);
+
+  const existsUser = await User.findOne({ username });
+  if (!existsUser)
+    return respFailure({ message: "USERNAME_IS_NOT_EXISTS" }, res);
+
+  const isValidPassword = await bcrypt.compareSync(
+    password,
+    existsUser.password
+  );
+  if (!isValidPassword)
+    return respFailure({ message: "PASSWORD_IS_WRONG" }, res);
+
+  const token = jwt.sign(
+    {
+      email: existsUser.email,
+      username: existsUser.username,
+    },
+    process.env.SECRET,
+    {
+      expiresIn: process.env.EXPIRED_TOKEN,
+    }
+  );
+  existsUser.token = token;
+  await existsUser.save();
+
+  return existsUser
+    .save()
+    .then((user) => {
+      return respSuccess({ message: "LOGIN_SUCCESS", data: user }, res);
+    })
+    .catch((error) => {
+      return respFailure({ message: "SERVER_ERROR", error }, res);
+    });
+};
+
+export const forgotPassword = async (req, res) => {
+  const { email } = req.query;
+
+  if (!email || !validateEmail(email))
+    return respFailure({ message: "EMAIL_INVALID" }, res);
+
+  const user = await User.findOne({ email });
+  if (!user) return respFailure({ message: "USER_NOT_EXISTS" }, res);
+  const newPassword = generateRandomPassword();
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.USER_GMAIL,
+      pass: process.env.PASSWORD_GMAIL,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.USER_GMAIL,
+    to: email,
+    subject: "Quên mật khẩu Real time Chat",
+    text: `Xin chào, ${user.username}!. Đây là password mới "${newPassword}" của bạn.`,
+  };
+
+  await transporter.sendMail(mailOptions);
+
+  const hashNewPassword = await bcrypt.hashSync(
+    newPassword,
+    parseInt(process.env.SALT_ROUNDS)
+  );
+  user.password = hashNewPassword;
+
+  return user
+    .save()
+    .then((user) => {
+      return respSuccess(
+        { message: "FORGOT_PASSWORD_SUCCESS", data: user },
+        res
+      );
+    })
+    .catch((error) => {
+      return respFailure({ message: "SERVER_ERROR", error }, res);
+    });
+};
