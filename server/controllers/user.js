@@ -78,7 +78,22 @@ export const loginUser = async (req, res) => {
       expiresIn: process.env.EXPIRED_TOKEN,
     }
   );
+
+  let curDate = new Date();
+  curDate.setDate(curDate.getDate() + parseInt(process.env.EXPIRED_TOKEN_DAYS));
+  const refreshToken = jwt.sign(
+    {
+      username: existsUser.username,
+      expDate: curDate,
+    },
+    process.env.SECRET,
+    {
+      expiresIn: process.env.EXPIRED_TOKEN,
+    }
+  );
+
   existsUser.token = token;
+  existsUser.refreshToken = refreshToken;
   await existsUser.save();
 
   return existsUser
