@@ -97,7 +97,7 @@ export const forgotPassword = async (req, res) => {
   if (!email) return respFailure({ message: "EMAIL_INVALID" }, res);
 
   const user = await User.findOne({ email });
-  if (!user) return respFailure({ message: "USER_NOT_EXISTS" }, res);
+  if (!user) return respFailure({ message: "USERNAME_IS_NOT_EXISTS" }, res);
   const newPassword = generateRandomPassword();
 
   const transporter = nodemailer.createTransport({
@@ -112,7 +112,7 @@ export const forgotPassword = async (req, res) => {
     from: process.env.USER_GMAIL,
     to: email,
     subject: "Quên mật khẩu Real time Chat",
-    text: `Xin chào, ${user.username}!. Đây là password mới "${newPassword}" của bạn.`,
+    text: `Xin chào, "${user.username}". Đây là password mới "${newPassword}" của bạn.`,
   };
 
   await transporter.sendMail(mailOptions);

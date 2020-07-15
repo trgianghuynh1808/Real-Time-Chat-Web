@@ -11,4 +11,4 @@ export const validatePassword = (password) => {
 };
 
 export const generateRandomPassword = () =>
-  Math.random().toString(36).slice(-8);
+  "Hi1" + Math.random().toString(36).slice(-8);

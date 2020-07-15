@@ -30,14 +30,13 @@ const Register = () => {
         const fetchRegister = async () => {
           try {
             await userApi.register({ username, email, password });
-            history.push("/account/login");
+            return history.push("/account/login");
           } catch (err) {
-            console.log(err);
+            resetForm();
           }
         };
 
         fetchRegister();
-        resetForm();
       }}
     >
       {(formik) => {
