@@ -1,0 +1,73 @@
+@import "App.scss";
+
+.friend-list {
+  height: 91vh;
+  border-left: 1px solid $border-color;
+  padding: 20px;
+
+  &__has-search .form-control {
+    padding-left: 2.375rem;
+  }
+
+  &__has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+  }
+
+  &__avatar-circle {
+    vertical-align: middle;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  &__friend-info {
+    padding-left: 10px;
+  }
+
+  &__prev-chat {
+    color: gray;
+    font-size: 14px;
+  }
+
+  &__icon {
+    color: $icon-color;
+    font-size: 18px;
+  }
+
+  &__item {
+    transition: 0.3s;
+    padding: 20px 0px;
+
+    &--active {
+      background-color: #f2f3f4;
+    }
+
+    .dot {
+      height: 14px;
+      width: 14px;
+      border-radius: 50%;
+      display: inline-block;
+      position: absolute;
+      right: -25px;
+      bottom: -3px;
+      border: 2px solid white;
+
+      &--online {
+        background-color: #2ecc71;
+      }
+
+      &--offline {
+        background-color: #bbb;
+      }
+    }
+  }
+}

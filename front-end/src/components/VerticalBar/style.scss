@@ -1,0 +1,45 @@
+@import "App.scss";
+
+.vertical-bar {
+  padding: 20px;
+  border-right: 2px solid #dfdfdf;
+  height: 98vh;
+
+  &__avatar-circle {
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+  }
+
+  &__icon {
+    color: $icon-color;
+  }
+
+  &__list-menu {
+    margin-top: 30px;
+  }
+
+  &__menu-item {
+    padding: 20px 10px;
+    font-size: 20px;
+    border-bottom: 1px solid $border-color;
+    color: green;
+
+    transition: 0.3s;
+
+    & span {
+      display: inline-block;
+    }
+
+    &:not(&--active):hover {
+      background-color: #f2f3f4;
+    }
+
+    &--active {
+      color: white;
+      background-color: #239b56;
+      pointer-events: none;
+    }
+  }
+}
