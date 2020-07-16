@@ -4,6 +4,8 @@ import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 
+import { randomString } from "../utils";
+
 mongoose.Promise = global.Promise;
 
 const userSchema = new mongoose.Schema({
@@ -21,6 +23,7 @@ const userSchema = new mongoose.Schema({
   token: { type: String },
   refresh_token: { type: String },
   status_caption: { type: String },
+  add_friend_code: { type: String, index: { unique: true } },
   id: { type: String, default: uuidv4(), required: true },
 });
 
@@ -37,8 +40,9 @@ userSchema.pre("save", async function (next) {
   }
 
   if (this.isNew) {
-    this._id = mongoose.Types.ObjectId();
+    user._id = mongoose.Types.ObjectId();
     user.username = user.username.toLowerCase();
+    user.add_friend_code = randomString(8);
   }
 
   return next();

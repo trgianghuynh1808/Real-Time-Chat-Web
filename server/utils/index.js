@@ -12,3 +12,14 @@ export const validatePassword = (password) => {
 
 export const generateRandomPassword = () =>
   "Hi1" + Math.random().toString(36).slice(-8);
+
+export const randomString = (
+  len,
+  baseStr = "123456789abcdefghijklmnopqwersyzw"
+) => {
+  let ans = "";
+  for (let i = len; i > 0; i--) {
+    ans += baseStr[Math.floor(Math.random() * baseStr.length)];
+  }
+  return ans;
+};

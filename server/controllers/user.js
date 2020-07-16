@@ -127,3 +127,25 @@ export const updateStatusCaption = async (req, res) => {
       return respFailure({ message: "SERVER_ERROR", error }, res);
     });
 };
+
+export const getInfoUser = async (req, res) => {
+  try {
+    const curUser = await authenticationUser(req, res);
+
+    return respSuccess(
+      {
+        message: "GET_INFO_USER_SUCCESS",
+        data: {
+          id: curUser.id,
+          username: curUser.username,
+          email: curUser.email,
+          status_caption: curUser.status_caption,
+          add_friend_code: curUser.add_friend_code,
+        },
+      },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: "SERVER_ERROR", error }, res);
+  }
+};
