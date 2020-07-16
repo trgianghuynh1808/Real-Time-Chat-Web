@@ -30,22 +30,34 @@ const InfoUser = ({ fullName, statusMsg, fetchUpdateStatusCaption }) => {
               {statusMsgState ? statusMsgState : "Chưa có trạng thái"}
             </div>
           ) : (
-            <input
-              type="text"
-              className="form-control mt-2"
-              placeholder="Nhập cảm xúc của bạn."
-              value={curStatusMsg}
-              onChange={(event) => {
-                setCurStatusMsg(event.target.value);
-              }}
-              onKeyPress={(event) => {
-                doFunctionWithEnter(event, () => {
-                  fetchUpdateStatusCaption(curStatusMsg);
-                  setStatusMsgState(curStatusMsg);
+            <div className="input-group input-group-sm mt-2">
+              <input
+                type="text"
+                className="form-control "
+                placeholder="Nhập cảm xúc của bạn."
+                value={curStatusMsg}
+                onChange={(event) => {
+                  setCurStatusMsg(event.target.value);
+                }}
+                onKeyPress={(event) => {
+                  doFunctionWithEnter(event, () => {
+                    fetchUpdateStatusCaption(curStatusMsg);
+                    setStatusMsgState(curStatusMsg);
+                    setUpdateStatusMsg(false);
+                    setCurStatusMsg("");
+                  });
+                }}
+              />
+              <div
+                className="input-group-append cursor-pointer"
+                onClick={() => {
+                  setCurStatusMsg("");
                   setUpdateStatusMsg(false);
-                });
-              }}
-            />
+                }}
+              >
+                <span className="input-group-text text-danger">x</span>
+              </div>
+            </div>
           )}
         </div>
       </div>
