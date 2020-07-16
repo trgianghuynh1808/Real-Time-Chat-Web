@@ -4,12 +4,8 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
 import User from "../models/User";
-import { respFailure, respSuccess } from "../utils/server";
-import {
-  validateEmail,
-  validatePassword,
-  generateRandomPassword,
-} from "../utils";
+import { respFailure, respSuccess, authenticationUser } from "../utils/server";
+import { validatePassword, generateRandomPassword } from "../utils";
 
 export const getUsers = async (req, res) => {
   return User.find()
@@ -152,22 +148,43 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const getCurrentUser = async (req, res) => {
-  const { authorization: token } = req.headers;
-
   try {
-    const { email } = jwt.verify(token, process.env.SECRET);
-
-    const curUser = await User.findOne({ email });
-    const resp = {
-      username: curUser.username,
-      statusCaption: curUser.statusCaption,
-    };
+    const curUser = await authenticationUser(req, res);
 
     return respSuccess(
-      { message: "GET_CURRENT_USER_SUCCESS", data: resp },
+      {
+        message: "GET_CURRENT_USER_SUCCESS",
+        data: {
+          username: curUser.username,
+          statusCaption: curUser.statusCaption,
+        },
+      },
       res
     );
   } catch (error) {
     return respFailure({ message: "SERVER_ERROR", error }, res);
   }
+};
+
+export const updateStatusCaption = async (req, res) => {
+  const { statusMsg } = req.body;
+
+  if (!statusMsg)
+    return respFailure({ message: "STATUS_CAPTION_INVALID", error }, res);
+
+  const user = await authenticationUser(req, res);
+
+  user.statusCaption = statusMsg;
+
+  return user
+    .save()
+    .then((user) => {
+      return respSuccess(
+        { message: "UPDATE_STATUS_CAPTION_SUCCESS", data: user },
+        res
+      );
+    })
+    .catch((error) => {
+      return respFailure({ message: "SERVER_ERROR", error }, res);
+    });
 };
