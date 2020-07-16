@@ -150,3 +150,24 @@ export const forgotPassword = async (req, res) => {
       return respFailure({ message: "SERVER_ERROR", error }, res);
     });
 };
+
+export const getCurrentUser = async (req, res) => {
+  const { authorization: token } = req.headers;
+
+  try {
+    const { email } = jwt.verify(token, process.env.SECRET);
+
+    const curUser = await User.findOne({ email });
+    const resp = {
+      username: curUser.username,
+      statusCaption: curUser.statusCaption,
+    };
+
+    return respSuccess(
+      { message: "GET_CURRENT_USER_SUCCESS", data: resp },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: "SERVER_ERROR", error }, res);
+  }
+};
