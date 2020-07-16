@@ -1,8 +1,3 @@
-import mongoose from "mongoose";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import nodemailer from "nodemailer";
-
 import User from "../models/User";
 import { respFailure, respSuccess, authenticationUser } from "../utils/server";
 import { validatePassword, generateRandomPassword } from "../utils";
@@ -26,15 +21,10 @@ export const registerUser = async (req, res) => {
   const existsUser = await User.findOne().or([{ username }, { email }]);
   if (existsUser) return respFailure({ message: "USER_ALREADY_EXISTS" }, res);
 
-  const hashPassword = await bcrypt.hashSync(
-    password,
-    parseInt(process.env.SALT_ROUNDS)
-  );
   const newUser = new User({
-    _id: mongoose.Types.ObjectId(),
     email,
     username,
-    password: hashPassword,
+    password,
   });
 
   return newUser
@@ -57,40 +47,10 @@ export const loginUser = async (req, res) => {
   if (!existsUser)
     return respFailure({ message: "USERNAME_IS_NOT_EXISTS" }, res);
 
-  const isValidPassword = await bcrypt.compareSync(
-    password,
-    existsUser.password
-  );
-  if (!isValidPassword)
+  if (!(await existsUser.comparePassword(password)))
     return respFailure({ message: "PASSWORD_IS_WRONG" }, res);
 
-  const token = jwt.sign(
-    {
-      email: existsUser.email,
-      username: existsUser.username,
-    },
-    process.env.SECRET,
-    {
-      expiresIn: process.env.EXPIRED_TOKEN,
-    }
-  );
-
-  let curDate = new Date();
-  curDate.setDate(curDate.getDate() + parseInt(process.env.EXPIRED_TOKEN_DAYS));
-  const refreshToken = jwt.sign(
-    {
-      username: existsUser.username,
-      expDate: curDate,
-    },
-    process.env.SECRET,
-    {
-      expiresIn: process.env.EXPIRED_TOKEN,
-    }
-  );
-
-  existsUser.token = token;
-  existsUser.refresh_token = refreshToken;
-  await existsUser.save();
+  await existsUser.generateTokens();
 
   return existsUser
     .save()
@@ -109,30 +69,10 @@ export const forgotPassword = async (req, res) => {
 
   const user = await User.findOne({ email });
   if (!user) return respFailure({ message: "USERNAME_IS_NOT_EXISTS" }, res);
+
   const newPassword = generateRandomPassword();
-
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.USER_GMAIL,
-      pass: process.env.PASSWORD_GMAIL,
-    },
-  });
-
-  const mailOptions = {
-    from: process.env.USER_GMAIL,
-    to: email,
-    subject: "Quên mật khẩu Real time Chat",
-    text: `Xin chào, "${user.username}". Đây là password mới "${newPassword}" của bạn.`,
-  };
-
-  await transporter.sendMail(mailOptions);
-
-  const hashNewPassword = await bcrypt.hashSync(
-    newPassword,
-    parseInt(process.env.SALT_ROUNDS)
-  );
-  user.password = hashNewPassword;
+  user.sendMailForgotPassword(newPassword);
+  user.password = newPassword;
 
   return user
     .save()
@@ -171,7 +111,6 @@ export const updateStatusCaption = async (req, res) => {
 
   if (!statusMsg)
     return respFailure({ message: "STATUS_CAPTION_INVALID", error }, res);
-
   const user = await authenticationUser(req, res);
 
   user.status_caption = statusMsg;
