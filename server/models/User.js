@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema({
   },
   password: { type: String, required: true },
   token: { type: String },
-  refreshToken: { type: String },
-  statusCaption: { type: String },
+  refresh_token: { type: String },
+  status_caption: { type: String },
 });
 
 export default mongoose.model("User", userSchema);

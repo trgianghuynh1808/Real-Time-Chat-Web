@@ -14,7 +14,7 @@ const userApi = {
     return axiosClient.get(`/forgot-password?email=${email}`);
   },
   getCurrentUser: () => {
-    return axiosClient.get("get-current-user");
+    return axiosClient.get("/get-current-user");
   },
   updateStatusCaption: (statusMsg) => {
     return axiosClient.post("/update-status-caption", { statusMsg });

@@ -37,7 +37,7 @@ const VerticalBar = () => {
     <div className="vertical-bar">
       <InfoUser
         fullName={curUser.username}
-        statusMsg={curUser.statusCaption}
+        statusMsg={curUser.status_caption}
         fetchUpdateStatusCaption={fetchUpdateStatusCaption}
       />
       <ListItemMenu menuItems={MENU_ITEM_LIST} />

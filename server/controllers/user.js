@@ -89,7 +89,7 @@ export const loginUser = async (req, res) => {
   );
 
   existsUser.token = token;
-  existsUser.refreshToken = refreshToken;
+  existsUser.refresh_token = refreshToken;
   await existsUser.save();
 
   return existsUser
@@ -156,7 +156,7 @@ export const getCurrentUser = async (req, res) => {
         message: "GET_CURRENT_USER_SUCCESS",
         data: {
           username: curUser.username,
-          statusCaption: curUser.statusCaption,
+          status_caption: curUser.status_caption,
         },
       },
       res
@@ -174,7 +174,7 @@ export const updateStatusCaption = async (req, res) => {
 
   const user = await authenticationUser(req, res);
 
-  user.statusCaption = statusMsg;
+  user.status_caption = statusMsg;
 
   return user
     .save()

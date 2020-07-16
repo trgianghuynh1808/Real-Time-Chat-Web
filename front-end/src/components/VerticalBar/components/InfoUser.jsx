@@ -22,7 +22,7 @@ const InfoUser = ({ fullName, statusMsg, fetchUpdateStatusCaption }) => {
         />
         <div className="col-12 text-center mt-3">
           <div className="font-weight-bold">{fullName}</div>
-          {statusMsgState && !updateStatusMsg ? (
+          {!updateStatusMsg ? (
             <div
               className="mt-2 cursor-pointer"
               onClick={() => setUpdateStatusMsg(true)}
