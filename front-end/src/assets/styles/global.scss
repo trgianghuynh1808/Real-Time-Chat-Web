@@ -14,3 +14,9 @@
   font-size: 14px;
   color: gray;
 }
+
+.form-control:focus {
+  outline: 0 !important;
+  border-color: initial;
+  box-shadow: none;
+}

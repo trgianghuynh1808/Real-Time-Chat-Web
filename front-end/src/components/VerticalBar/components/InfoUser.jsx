@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Emojione } from "react-emoji-render";
 
 import Images from "constants/images";
 import { doFunctionWithEnter } from "utils";
+import { updateStatusCaption } from "features/Login/userSlice";
 
-const InfoUser = ({ fullName, statusMsg, fetchUpdateStatusCaption }) => {
+const InfoUser = ({ fullName, statusMsg }) => {
   const [updateStatusMsg, setUpdateStatusMsg] = useState(false);
   const [curStatusMsg, setCurStatusMsg] = useState("");
-  const [statusMsgState, setStatusMsgState] = useState(statusMsg);
+  const dispatch = useDispatch();
 
   return (
     <div className="container">
@@ -27,13 +30,13 @@ const InfoUser = ({ fullName, statusMsg, fetchUpdateStatusCaption }) => {
               className="mt-2 cursor-pointer"
               onClick={() => setUpdateStatusMsg(true)}
             >
-              {statusMsgState ? statusMsgState : "Chưa có trạng thái"}
+              {statusMsg ? <Emojione text={statusMsg} /> : "Chưa có trạng thái"}
             </div>
           ) : (
             <div className="input-group input-group-sm mt-2">
               <input
                 type="text"
-                className="form-control "
+                className="form-control py-2 border-right-0 border"
                 placeholder="Nhập cảm xúc của bạn."
                 value={curStatusMsg}
                 onChange={(event) => {
@@ -41,22 +44,25 @@ const InfoUser = ({ fullName, statusMsg, fetchUpdateStatusCaption }) => {
                 }}
                 onKeyPress={(event) => {
                   doFunctionWithEnter(event, () => {
-                    fetchUpdateStatusCaption(curStatusMsg);
-                    setStatusMsgState(curStatusMsg);
+                    dispatch(updateStatusCaption(curStatusMsg));
+
                     setUpdateStatusMsg(false);
                     setCurStatusMsg("");
                   });
                 }}
               />
-              <div
-                className="input-group-append cursor-pointer"
-                onClick={() => {
-                  setCurStatusMsg("");
-                  setUpdateStatusMsg(false);
-                }}
-              >
-                <span className="input-group-text text-danger">x</span>
-              </div>
+              <span className="input-group-append cursor-pointer">
+                <button
+                  className="btn btn-outline-secondary border-left-0 border"
+                  type="button"
+                  onClick={() => {
+                    setCurStatusMsg("");
+                    setUpdateStatusMsg(false);
+                  }}
+                >
+                  <i className="fas fa-times"></i>
+                </button>
+              </span>
             </div>
           )}
         </div>
