@@ -1,22 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty } from "lodash/fp";
 
 import "./style.scss";
 import InfoUser from "./components/InfoUser";
 import ListItemMenu from "./components/ListItemMenu";
 import { MENU_ITEM_LIST } from "constants/global";
 import userApi from "api/userApi";
+import { getCurUser } from "features/Login/userSlice";
 
 const VerticalBar = () => {
-  const [curUser, setCurUser] = useState(null);
-
-  const fetchGetCurrentUser = async () => {
-    try {
-      const curUser = await userApi.getCurrentUser();
-      setCurUser(curUser.data);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  const dispatch = useDispatch();
+  const curUser = useSelector((state) => state.user);
 
   const fetchUpdateStatusCaption = async (statusMsg) => {
     try {
@@ -28,8 +23,19 @@ const VerticalBar = () => {
   };
 
   useEffect(() => {
+    const fetchGetCurrentUser = async () => {
+      try {
+        if (isEmpty(curUser)) {
+          const curUser = await userApi.getCurrentUser();
+          dispatch(getCurUser(curUser.data));
+        }
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
     fetchGetCurrentUser();
-  }, []);
+  }, [curUser, dispatch]);
 
   if (!curUser) return <div>Loading...</div>;
 
