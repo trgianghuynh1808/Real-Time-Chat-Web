@@ -21,6 +21,13 @@ const userSlice = createSlice({
         console.log("error", error);
       }
     },
+    updateNickNameUser: (state, action) => {
+      const newNickName = action.payload;
+      state.nick_name = newNickName;
+    },
+    clearUserStore: () => {
+      return {};
+    },
   },
   extraReducers: {
     [fetchCurUser.fulfilled]: (state, action) => {
@@ -30,7 +37,11 @@ const userSlice = createSlice({
 });
 
 const { actions, reducer } = userSlice;
-export const { updateStatusCaption } = actions;
+export const {
+  updateStatusCaption,
+  clearUserStore,
+  updateNickNameUser,
+} = actions;
 export const userAsync = { fetchCurUser };
 
 export default reducer;

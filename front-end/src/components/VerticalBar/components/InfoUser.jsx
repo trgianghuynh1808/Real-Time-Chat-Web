@@ -6,10 +6,12 @@ import Images from "constants/images";
 import { doFunctionWithEnter } from "utils";
 import { updateStatusCaption } from "features/Login/userSlice";
 
-const InfoUser = ({ fullName, statusMsg }) => {
+const InfoUser = ({ user }) => {
   const [updateStatusMsg, setUpdateStatusMsg] = useState(false);
   const [curStatusMsg, setCurStatusMsg] = useState("");
   const dispatch = useDispatch();
+
+  const { username, status_caption: statusMsg, nick_name: nickName } = user;
 
   return (
     <div className="container">
@@ -24,7 +26,7 @@ const InfoUser = ({ fullName, statusMsg }) => {
           className="vertical-bar__avatar-circle"
         />
         <div className="col-12 text-center mt-3">
-          <div className="font-weight-bold">{fullName}</div>
+          <div className="font-weight-bold">{nickName || username}</div>
           {!updateStatusMsg ? (
             <div
               className="mt-2 cursor-pointer"
@@ -44,10 +46,12 @@ const InfoUser = ({ fullName, statusMsg }) => {
                 }}
                 onKeyPress={(event) => {
                   doFunctionWithEnter(event, () => {
-                    dispatch(updateStatusCaption(curStatusMsg));
+                    if (curStatusMsg) {
+                      dispatch(updateStatusCaption(curStatusMsg));
 
-                    setUpdateStatusMsg(false);
-                    setCurStatusMsg("");
+                      setUpdateStatusMsg(false);
+                      setCurStatusMsg("");
+                    }
                   });
                 }}
               />

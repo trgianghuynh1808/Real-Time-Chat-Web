@@ -97,6 +97,7 @@ export const getCurrentUser = async (req, res) => {
         data: {
           username: curUser.username,
           status_caption: curUser.status_caption,
+          nick_name: curUser.nick_name,
         },
       },
       res
@@ -141,6 +142,7 @@ export const getInfoUser = async (req, res) => {
           email: curUser.email,
           status_caption: curUser.status_caption,
           add_friend_code: curUser.add_friend_code,
+          nick_name: curUser.nick_name,
         },
       },
       res
@@ -148,4 +150,27 @@ export const getInfoUser = async (req, res) => {
   } catch (error) {
     return respFailure({ message: "SERVER_ERROR", error }, res);
   }
+};
+
+export const updateNickNameUser = async (req, res) => {
+  const { nickName } = req.body;
+
+  if (!nickName)
+    return respFailure({ message: "NICK_NAME_INVALID", error }, res);
+
+  const user = await authenticationUser(req, res);
+
+  user.nick_name = nickName;
+
+  return user
+    .save()
+    .then((user) => {
+      return respSuccess(
+        { message: "UPDATE_NICK_NAME_SUCCESS", data: user },
+        res
+      );
+    })
+    .catch((error) => {
+      return respFailure({ message: "SERVER_ERROR", error }, res);
+    });
 };

@@ -8,6 +8,7 @@ import {
   getCurrentUser,
   updateStatusCaption,
   getInfoUser,
+  updateNickNameUser,
 } from "../controllers/user";
 
 import {
@@ -26,6 +27,7 @@ router.get("/forgot-password", forgotPassword);
 router.get("/get-current-user", getCurrentUser);
 router.post("/update-status-caption", updateStatusCaption);
 router.get("/get-info-user", getInfoUser);
+router.post("/update-nick-name-user", updateNickNameUser);
 
 //Relationships
 router.get("/friends", getAllFriends);

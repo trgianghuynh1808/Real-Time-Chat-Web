@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema({
   status_caption: { type: String },
   add_friend_code: { type: String, index: { unique: true } },
   id: { type: String, default: uuidv4(), required: true },
+  nick_name: { type: String },
 });
 
 userSchema.pre("save", async function (next) {

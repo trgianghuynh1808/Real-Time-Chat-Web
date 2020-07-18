@@ -20,10 +20,7 @@ const VerticalBar = () => {
 
   return (
     <div className="vertical-bar">
-      <InfoUser
-        fullName={curUser.username}
-        statusMsg={curUser.status_caption}
-      />
+      <InfoUser user={curUser} />
       <ListItemMenu menuItems={MENU_ITEM_LIST} />
     </div>
   );
