@@ -22,8 +22,9 @@ const Login = () => {
         const fetchLogin = async () => {
           try {
             const resp = await userApi.login({ username, password });
-            const { token } = resp.data;
+            const { token, refresh_token } = resp.data;
             saveToken(token);
+            saveToken(refresh_token, "_refresh_real-time-chat");
             history.push("/chat");
           } catch (error) {
             resetForm();

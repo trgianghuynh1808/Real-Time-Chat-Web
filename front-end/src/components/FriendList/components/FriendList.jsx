@@ -1,4 +1,5 @@
 import React from "react";
+import { Emojione } from "react-emoji-render";
 
 const FriendList = ({ friendList }) => {
   return (
@@ -21,7 +22,9 @@ const FriendList = ({ friendList }) => {
             </div>
             <div className="col-9 ml-3 cursor-pointer">
               <div className="font-weight-bold">{friend.name}</div>
-              <div className="friend-list__prev-chat">{friend.statusMsg}</div>
+              <div className="friend-list__prev-chat">
+                <Emojione text={friend.statusMsg} />{" "}
+              </div>
             </div>
             <div className="col-1">
               <i className="fas fa-ellipsis-v friend-list__icon cursor-pointer"></i>
