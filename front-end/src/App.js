@@ -11,6 +11,7 @@ import { getToken } from "libs/token-libs";
 
 const Chat = React.lazy(() => import("features/Chat"));
 const Login = React.lazy(() => import("features/Login"));
+const Profile = React.lazy(() => import("features/Profile"));
 
 const checkAuth = () => {
   const token = getToken();
@@ -35,7 +36,7 @@ const AuthRoute = ({ component, ...rest }) => {
   return <Redirect to={{ pathname: "/account/login" }} />;
 };
 
-function App() {
+const App = () => {
   return (
     <div className="chat-app">
       <Suspense fallback={<div>Loading...</div>}>
@@ -43,8 +44,9 @@ function App() {
           <Switch>
             <Redirect exact from="/" to="/account/login" />
 
-            <AuthRoute path="/chat" component={Chat} />
             <Route path="/account" component={Login} />
+            <AuthRoute path="/chat" component={Chat} />
+            <AuthRoute path="/profile" component={Profile} />
 
             <Route component={NotFound} />
           </Switch>
@@ -53,6 +55,6 @@ function App() {
       </Suspense>
     </div>
   );
-}
+};
 
 export default App;

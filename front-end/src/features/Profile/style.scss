@@ -1,0 +1,30 @@
+.profile-wrp {
+  margin-top: 50px;
+
+  .avatar-wrp {
+    &:hover .avatar {
+      opacity: 0.5;
+    }
+
+    &:hover .avatar-icon {
+      opacity: 0.7;
+    }
+  }
+
+  .avatar {
+    vertical-align: middle;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    transition: 0.5s ease;
+  }
+
+  .avatar-icon {
+    position: absolute;
+    right: 49.3%;
+    bottom: 40px;
+    font-size: 24px;
+    opacity: 0;
+    transition: 0.5s ease;
+  }
+}
