@@ -27,6 +27,11 @@ const userApi = {
       nickName: newNickname,
     });
   },
+  changePassword: (password) => {
+    return axiosClient.post("/change-password", {
+      password,
+    });
+  },
 };
 
 export default userApi;
