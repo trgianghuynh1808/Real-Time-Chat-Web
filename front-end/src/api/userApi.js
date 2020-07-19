@@ -32,6 +32,11 @@ const userApi = {
       password,
     });
   },
+  getUserByFriendCode: (addFriendCode) => {
+    return axiosClient.get(
+      `/get-user-by-friend-code?addFriendCode=${addFriendCode}`
+    );
+  },
 };
 
 export default userApi;

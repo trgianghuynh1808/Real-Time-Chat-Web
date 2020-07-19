@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
+import { _ } from "lodash";
 
 import { randomString } from "../utils";
 
@@ -103,6 +104,18 @@ userSchema.methods.generateTokens = function () {
 
   this.token = token;
   this.refresh_token = refreshToken;
+};
+
+userSchema.methods.toJSON = function () {
+  let obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
+
+userSchema.methods.filterAtr = function (
+  filterArr = ["token", "refresh_token", "password", "_id"]
+) {
+  return _.omit(this.toObject(), filterArr);
 };
 
 export default mongoose.model("User", userSchema);

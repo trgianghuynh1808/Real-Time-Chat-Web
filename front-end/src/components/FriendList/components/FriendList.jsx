@@ -26,9 +26,6 @@ const FriendList = ({ friendList }) => {
                 <Emojione text={friend.statusMsg} />{" "}
               </div>
             </div>
-            <div className="col-1">
-              <i className="fas fa-ellipsis-v friend-list__icon cursor-pointer"></i>
-            </div>
           </div>
         );
       })}

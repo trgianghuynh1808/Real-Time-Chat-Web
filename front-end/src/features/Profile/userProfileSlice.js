@@ -32,6 +32,9 @@ const userProfileSlice = createSlice({
         console.log("error", error);
       }
     },
+    clearUserProfileStore: () => {
+      return {};
+    },
   },
   extraReducers: {
     [fetchUserProfile.fulfilled]: (state, action) => {
@@ -41,7 +44,7 @@ const userProfileSlice = createSlice({
 });
 
 const { actions, reducer } = userProfileSlice;
-export const { updateNickName } = actions;
+export const { updateNickName, clearUserProfileStore } = actions;
 export const userProfileAsync = { fetchUserProfile, fetchChangePassword };
 
 export default reducer;

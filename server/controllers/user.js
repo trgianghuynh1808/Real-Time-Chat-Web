@@ -1,3 +1,5 @@
+import { _ } from "lodash";
+
 import User from "../models/User";
 import { respFailure, respSuccess, authenticationUser } from "../utils/server";
 import { validatePassword, generateRandomPassword } from "../utils";
@@ -15,6 +17,7 @@ const {
   GET_INFO_USER_SUCCESS,
   UPDATE_NICK_NAME_SUCCESS,
   CHANGE_PASSWORD_SUCCESS,
+  GET_USER_BY_FRIEND_CODE_SUCCESS,
 
   PASSWORD_INVALID,
   USER_ALREADY_EXISTS,
@@ -24,6 +27,9 @@ const {
   EMAIL_INVALID,
   STATUS_CAPTION_INVALID,
   NICK_NAME_INVALID,
+  ADD_FRIEND_CODE_INVALID,
+  USER_IS_NOT_EXISTS,
+  CANNOT_FIND_YOURSELF,
 } = RESP_CODE;
 
 export const getUsers = async (req, res) => {
@@ -210,4 +216,32 @@ export const changePassword = async (req, res) => {
     .catch((error) => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
+};
+
+export const getUserByFriendCode = async (req, res) => {
+  const { addFriendCode } = req.query;
+
+  if (!addFriendCode)
+    return respFailure({ message: ADD_FRIEND_CODE_INVALID }, res);
+
+  try {
+    const curUser = await authenticationUser(req, res);
+    const user = await User.findOne({
+      add_friend_code: addFriendCode,
+    });
+
+    if (!user) return respFailure({ message: USER_IS_NOT_EXISTS }, res);
+    if (user.username === curUser.username)
+      return respFailure({ message: CANNOT_FIND_YOURSELF }, res);
+
+    return respSuccess(
+      {
+        message: GET_USER_BY_FRIEND_CODE_SUCCESS,
+        data: user.filterAtr(),
+      },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
 };

@@ -7,6 +7,7 @@ import Main from "./components/Main";
 import { formatAMPM } from "utils";
 import { removeToken } from "libs/token-libs";
 import { clearUserStore } from "features/Login/userSlice";
+import { clearUserProfileStore } from "features/Profile/userProfileSlice";
 
 const Header = () => {
   const history = useHistory();
@@ -16,6 +17,7 @@ const Header = () => {
     removeToken();
     history.push("/account/login");
     dispatch(clearUserStore());
+    dispatch(clearUserProfileStore());
   };
 
   return (
