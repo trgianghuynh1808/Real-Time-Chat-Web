@@ -27,6 +27,16 @@ const userApi = {
       nickName: newNickname,
     });
   },
+  changePassword: (password) => {
+    return axiosClient.post("/change-password", {
+      password,
+    });
+  },
+  getUserByFriendCode: (addFriendCode) => {
+    return axiosClient.get(
+      `/get-user-by-friend-code?addFriendCode=${addFriendCode}`
+    );
+  },
 };
 
 export default userApi;

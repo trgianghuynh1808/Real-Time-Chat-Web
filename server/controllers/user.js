@@ -1,14 +1,44 @@
+import { _ } from "lodash";
+
 import User from "../models/User";
 import { respFailure, respSuccess, authenticationUser } from "../utils/server";
 import { validatePassword, generateRandomPassword } from "../utils";
+import RESP_CODE from "../constants/resp-code";
+
+const {
+  SERVER_ERROR,
+
+  GET_USERS_SUCCESS,
+  REGISTER_SUCCESS,
+  LOGIN_SUCCESS,
+  FORGOT_PASSWORD_SUCCESS,
+  GET_CURRENT_USER_SUCCESS,
+  UPDATE_STATUS_CAPTION_SUCCESS,
+  GET_INFO_USER_SUCCESS,
+  UPDATE_NICK_NAME_SUCCESS,
+  CHANGE_PASSWORD_SUCCESS,
+  GET_USER_BY_FRIEND_CODE_SUCCESS,
+
+  PASSWORD_INVALID,
+  USER_ALREADY_EXISTS,
+  USERNAME_OR_PASSWORD_INVALID,
+  USERNAME_IS_NOT_EXISTS,
+  PASSWORD_IS_WRONG,
+  EMAIL_INVALID,
+  STATUS_CAPTION_INVALID,
+  NICK_NAME_INVALID,
+  ADD_FRIEND_CODE_INVALID,
+  USER_IS_NOT_EXISTS,
+  CANNOT_FIND_YOURSELF,
+} = RESP_CODE;
 
 export const getUsers = async (req, res) => {
   return User.find()
     .then((users) => {
-      return respSuccess({ message: "GET_USERS_SUCCESS", data: users }, res);
+      return respSuccess({ message: GET_USERS_SUCCESS, data: users }, res);
     })
     .catch((error) => {
-      return respFailure({ message: "SERVER_ERROR", error }, res);
+      return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
 
@@ -16,10 +46,10 @@ export const registerUser = async (req, res) => {
   const { email, username, password } = req.body;
 
   if (!validatePassword(password))
-    return respFailure({ message: "PASSWORD_INVALID" }, res);
+    return respFailure({ message: PASSWORD_INVALID }, res);
 
   const existsUser = await User.findOne().or([{ username }, { email }]);
-  if (existsUser) return respFailure({ message: "USER_ALREADY_EXISTS" }, res);
+  if (existsUser) return respFailure({ message: USER_ALREADY_EXISTS }, res);
 
   const newUser = new User({
     email,
@@ -30,10 +60,10 @@ export const registerUser = async (req, res) => {
   return newUser
     .save()
     .then((newUser) => {
-      return respSuccess({ message: "REGISTER_SUCCESS", data: newUser }, res);
+      return respSuccess({ message: REGISTER_SUCCESS, data: newUser }, res);
     })
     .catch((error) => {
-      return respFailure({ message: "SERVER_ERROR", error }, res);
+      return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
 
@@ -41,34 +71,33 @@ export const loginUser = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password)
-    return respFailure({ message: "USERNAME_OR_PASSWORD_INVALID" }, res);
+    return respFailure({ message: USERNAME_OR_PASSWORD_INVALID }, res);
 
   const existsUser = await User.findOne({ username });
-  if (!existsUser)
-    return respFailure({ message: "USERNAME_IS_NOT_EXISTS" }, res);
+  if (!existsUser) return respFailure({ message: USERNAME_IS_NOT_EXISTS }, res);
 
   if (!(await existsUser.comparePassword(password)))
-    return respFailure({ message: "PASSWORD_IS_WRONG" }, res);
+    return respFailure({ message: PASSWORD_IS_WRONG }, res);
 
   await existsUser.generateTokens();
 
   return existsUser
     .save()
     .then((user) => {
-      return respSuccess({ message: "LOGIN_SUCCESS", data: user }, res);
+      return respSuccess({ message: LOGIN_SUCCESS, data: user }, res);
     })
     .catch((error) => {
-      return respFailure({ message: "SERVER_ERROR", error }, res);
+      return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
 
 export const forgotPassword = async (req, res) => {
   const { email } = req.query;
 
-  if (!email) return respFailure({ message: "EMAIL_INVALID" }, res);
+  if (!email) return respFailure({ message: EMAIL_INVALID }, res);
 
   const user = await User.findOne({ email });
-  if (!user) return respFailure({ message: "USERNAME_IS_NOT_EXISTS" }, res);
+  if (!user) return respFailure({ message: USERNAME_IS_NOT_EXISTS }, res);
 
   const newPassword = generateRandomPassword();
   user.sendMailForgotPassword(newPassword);
@@ -77,13 +106,10 @@ export const forgotPassword = async (req, res) => {
   return user
     .save()
     .then((user) => {
-      return respSuccess(
-        { message: "FORGOT_PASSWORD_SUCCESS", data: user },
-        res
-      );
+      return respSuccess({ message: FORGOT_PASSWORD_SUCCESS, data: user }, res);
     })
     .catch((error) => {
-      return respFailure({ message: "SERVER_ERROR", error }, res);
+      return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
 
@@ -93,7 +119,7 @@ export const getCurrentUser = async (req, res) => {
 
     return respSuccess(
       {
-        message: "GET_CURRENT_USER_SUCCESS",
+        message: GET_CURRENT_USER_SUCCESS,
         data: {
           username: curUser.username,
           status_caption: curUser.status_caption,
@@ -103,7 +129,7 @@ export const getCurrentUser = async (req, res) => {
       res
     );
   } catch (error) {
-    return respFailure({ message: "SERVER_ERROR", error }, res);
+    return respFailure({ message: SERVER_ERROR, error }, res);
   }
 };
 
@@ -111,7 +137,7 @@ export const updateStatusCaption = async (req, res) => {
   const { statusMsg } = req.body;
 
   if (!statusMsg)
-    return respFailure({ message: "STATUS_CAPTION_INVALID", error }, res);
+    return respFailure({ message: STATUS_CAPTION_INVALID, error }, res);
   const user = await authenticationUser(req, res);
 
   user.status_caption = statusMsg;
@@ -120,12 +146,12 @@ export const updateStatusCaption = async (req, res) => {
     .save()
     .then((user) => {
       return respSuccess(
-        { message: "UPDATE_STATUS_CAPTION_SUCCESS", data: user },
+        { message: UPDATE_STATUS_CAPTION_SUCCESS, data: user },
         res
       );
     })
     .catch((error) => {
-      return respFailure({ message: "SERVER_ERROR", error }, res);
+      return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
 
@@ -135,7 +161,7 @@ export const getInfoUser = async (req, res) => {
 
     return respSuccess(
       {
-        message: "GET_INFO_USER_SUCCESS",
+        message: GET_INFO_USER_SUCCESS,
         data: {
           id: curUser.id,
           username: curUser.username,
@@ -148,15 +174,14 @@ export const getInfoUser = async (req, res) => {
       res
     );
   } catch (error) {
-    return respFailure({ message: "SERVER_ERROR", error }, res);
+    return respFailure({ message: SERVER_ERROR, error }, res);
   }
 };
 
 export const updateNickNameUser = async (req, res) => {
   const { nickName } = req.body;
 
-  if (!nickName)
-    return respFailure({ message: "NICK_NAME_INVALID", error }, res);
+  if (!nickName) return respFailure({ message: NICK_NAME_INVALID, error }, res);
 
   const user = await authenticationUser(req, res);
 
@@ -166,11 +191,57 @@ export const updateNickNameUser = async (req, res) => {
     .save()
     .then((user) => {
       return respSuccess(
-        { message: "UPDATE_NICK_NAME_SUCCESS", data: user },
+        { message: UPDATE_NICK_NAME_SUCCESS, data: user },
         res
       );
     })
     .catch((error) => {
-      return respFailure({ message: "SERVER_ERROR", error }, res);
+      return respFailure({ message: SERVER_ERROR, error }, res);
     });
+};
+
+export const changePassword = async (req, res) => {
+  const { password } = req.body;
+
+  if (!password) return respFailure({ message: PASSWORD_INVALID, error }, res);
+
+  const user = await authenticationUser(req, res);
+  user.password = password;
+
+  return user
+    .save()
+    .then((user) => {
+      return respSuccess({ message: CHANGE_PASSWORD_SUCCESS, data: user }, res);
+    })
+    .catch((error) => {
+      return respFailure({ message: SERVER_ERROR, error }, res);
+    });
+};
+
+export const getUserByFriendCode = async (req, res) => {
+  const { addFriendCode } = req.query;
+
+  if (!addFriendCode)
+    return respFailure({ message: ADD_FRIEND_CODE_INVALID }, res);
+
+  try {
+    const curUser = await authenticationUser(req, res);
+    const user = await User.findOne({
+      add_friend_code: addFriendCode,
+    });
+
+    if (!user) return respFailure({ message: USER_IS_NOT_EXISTS }, res);
+    if (user.username === curUser.username)
+      return respFailure({ message: CANNOT_FIND_YOURSELF }, res);
+
+    return respSuccess(
+      {
+        message: GET_USER_BY_FRIEND_CODE_SUCCESS,
+        data: user.filterAtr(),
+      },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
 };

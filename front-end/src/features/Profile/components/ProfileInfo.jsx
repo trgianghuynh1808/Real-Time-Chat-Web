@@ -1,10 +1,33 @@
 import React, { useState, Fragment, useEffect } from "react";
 import { isEmpty } from "lodash/fp";
+import { FastField, Form, Formik } from "formik";
 
 import Images from "constants/images";
-import { showInfoToast } from "libs/toast-libs";
+import { showInfoToast, showErrorToast } from "libs/toast-libs";
 
-const ProfileInfo = ({ userProfile, handleUpdateNickName }) => {
+const PasswordFiledComponent = ({ field, label = "", ...other }) => {
+  const { name } = field;
+
+  return (
+    <div className="form-group mt-3">
+      <label htmlFor="password">Mật khẩu mới:</label>
+      <input
+        id={name}
+        {...field}
+        type="password"
+        className="form-control"
+        autoComplete="new-password"
+        {...other}
+      />
+    </div>
+  );
+};
+
+const ProfileInfo = ({
+  userProfile,
+  handleUpdateNickName,
+  handleChangePassword,
+}) => {
   const [curNickName, setCurNickname] = useState("");
 
   const handleCopyButton = () => {
@@ -15,6 +38,18 @@ const ProfileInfo = ({ userProfile, handleUpdateNickName }) => {
 
     document.execCommand("copy");
     showInfoToast("Hãy gửi mã này cho bạn bè ^^~");
+  };
+
+  const handleSubmitForm = (values, { resetForm }) => {
+    const { password, confirmPassword } = values;
+
+    if (password !== confirmPassword) {
+      resetForm();
+      return showErrorToast("Mật khẩu nhập lại không khớp! ");
+    }
+
+    handleChangePassword(password);
+    resetForm();
   };
 
   useEffect(() => {
@@ -113,36 +148,58 @@ const ProfileInfo = ({ userProfile, handleUpdateNickName }) => {
                 />
               </div>
             </div>
-            <div className="col-4">
-              <h6 className="font-weight-bold text-capitalize text-center">
-                Đổi mật khẩu
-              </h6>
-              <div className="form-group mt-3">
-                <label htmlFor="password">Mật khẩu mới:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  autoComplete="new-password"
-                />
-              </div>
-              <div className="form-group mt-3">
-                <label htmlFor="confirmPass">Nhập lại mật khẩu mới:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="confirmPass"
-                />
-              </div>
-              <div className="row justify-content-center mt-2">
-                <button type="button" className="btn btn-success mr-2">
-                  Xác Nhận
-                </button>
-                <button type="button" className="btn btn-danger ml-2">
-                  Trở Lại
-                </button>
-              </div>
-            </div>
+            <Formik
+              initialValues={{
+                password: "",
+                confirmPassword: "",
+              }}
+              onSubmit={handleSubmitForm}
+            >
+              {(formikProps) => {
+                return (
+                  <div className="col-4">
+                    <h6 className="font-weight-bold text-capitalize text-center">
+                      Đổi mật khẩu
+                    </h6>
+
+                    <Form>
+                      <FastField
+                        component={PasswordFiledComponent}
+                        label={"Mật khẩu mới:"}
+                        name={"password"}
+                        placeholder={"Nhập mật khẩu mới"}
+                      />
+
+                      <FastField
+                        component={PasswordFiledComponent}
+                        label={"Nhập lại mật khẩu mới:"}
+                        name={"confirmPassword"}
+                        placeholder={"Nhập lại mật khẩu mới"}
+                      />
+
+                      <div className="row justify-content-center mt-2">
+                        <button
+                          className="btn btn-success mr-2"
+                          type="submit"
+                          disabled={!(formikProps.isValid && formikProps.dirty)}
+                        >
+                          Xác Nhận
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger ml-2"
+                          onClick={() => {
+                            formikProps.resetForm();
+                          }}
+                        >
+                          Trở Lại
+                        </button>
+                      </div>
+                    </Form>
+                  </div>
+                );
+              }}
+            </Formik>
           </div>
         </div>
       </div>

@@ -18,11 +18,16 @@ const MainPage = () => {
     dispatch(updateNickNameUser(newNickName));
   };
 
+  const handleChangePassword = (newPassword) => {
+    dispatch(userProfileAsync.fetchChangePassword(newPassword));
+  };
+
   return (
     <div>
       <ProfileInfo
         userProfile={curUserProfile}
         handleUpdateNickName={handleUpdateNickName}
+        handleChangePassword={handleChangePassword}
       />
     </div>
   );

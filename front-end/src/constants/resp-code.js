@@ -10,4 +10,5 @@ export default {
   EMAIL_INVALID: "Email không hợp lệ!",
   UPDATE_NICK_NAME_SUCCESS: "Thay đỏi nick name thành công",
   NICK_NAME_INVALID: "Nick name không hợp lệ!",
+  CHANGE_PASSWORD_SUCCESS: "Đổi mật khẩu thành công",
 };

@@ -4,6 +4,7 @@ import "./style.scss";
 import FriendListComponent from "./components/FriendList";
 import SearchBar from "./components/SearchBar";
 import Images from "constants/images";
+import userApi from "api/userApi";
 
 const FRIEND_LIST = [
   {
@@ -24,9 +25,13 @@ const FRIEND_LIST = [
 ];
 
 const FriendList = () => {
+  const handleSearch = async (addFriendCode) => {
+    return await userApi.getUserByFriendCode(addFriendCode);
+  };
+
   return (
     <div className="friend-list">
-      <SearchBar />
+      <SearchBar handleSearch={handleSearch} />
       <FriendListComponent friendList={FRIEND_LIST} />
     </div>
   );

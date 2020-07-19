@@ -10,6 +10,14 @@ const fetchUserProfile = createAsyncThunk(
   }
 );
 
+const fetchChangePassword = createAsyncThunk(
+  "userProfile/fetchChangePassword",
+  async (newPassword) => {
+    const resp = await userApi.changePassword(newPassword);
+    return resp.data;
+  }
+);
+
 const userProfileSlice = createSlice({
   name: "userProfile",
   initialState: {},
@@ -24,6 +32,9 @@ const userProfileSlice = createSlice({
         console.log("error", error);
       }
     },
+    clearUserProfileStore: () => {
+      return {};
+    },
   },
   extraReducers: {
     [fetchUserProfile.fulfilled]: (state, action) => {
@@ -33,7 +44,7 @@ const userProfileSlice = createSlice({
 });
 
 const { actions, reducer } = userProfileSlice;
-export const { updateNickName } = actions;
-export const userProfileAsync = { fetchUserProfile };
+export const { updateNickName, clearUserProfileStore } = actions;
+export const userProfileAsync = { fetchUserProfile, fetchChangePassword };
 
 export default reducer;
