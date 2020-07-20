@@ -18,15 +18,11 @@ export const respFailure = ({ message, error = {} }, res) => {
   });
 };
 
-export const authenticationUser = async (req, res) => {
-  const { authorization: token } = req.headers;
-  const tokenFormatted = token.split(" ")[1];
+export const getUserByToken = async (req, res) => {
+  const { email } = req.decoded;
+  const user = await User.findOne({ email });
 
-  try {
-    const { email } = jwt.verify(tokenFormatted, process.env.SECRET);
+  if (!user) return respFailure({ message: "USER_IS_NOT_EXISTS", error }, res);
 
-    return await User.findOne({ email });
-  } catch (error) {
-    return respFailure({ message: "NOT_AUTHENTICATION", error }, res);
-  }
+  return user;
 };

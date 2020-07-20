@@ -1,7 +1,8 @@
 import axios from "axios";
 import queryString from "query-string";
+import { get } from "lodash/fp";
 
-import { getToken } from "libs/token-libs";
+import { getToken, getRefreshToken, saveToken } from "libs/token-libs";
 import { showErrorToast, showSuccessToast } from "libs/toast-libs";
 import { getMsgByRespCode } from "utils";
 
@@ -12,6 +13,7 @@ const axiosClient = axios.create({
   },
   paramsSerializer: (params) => queryString.stringify(params),
 });
+
 axiosClient.interceptors.request.use(async (config) => {
   // Handle token here ...
   const token = getToken();
@@ -30,8 +32,24 @@ axiosClient.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
-    const { data } = error.response;
+  async (error) => {
+    const { data, status } = error.response;
+    const originalRequest = error.config;
+
+    //handle refresh token
+    if (status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      const resp = await axios.post(
+        `${process.env.REACT_APP_SERVER_URL}/refresh-token`,
+        { refreshToken: getRefreshToken() }
+      );
+
+      const token = get("data.token", resp.data);
+      saveToken(token);
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      return axiosClient(originalRequest);
+    }
+
     if (data) {
       const { message } = data;
       showErrorToast(getMsgByRespCode(message));

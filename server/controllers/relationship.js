@@ -1,6 +1,6 @@
 import Relationship from "../models/Relationship";
 import User from "../models/User";
-import { respFailure, respSuccess, authenticationUser } from "../utils/server";
+import { respFailure, respSuccess, getUserByToken } from "../utils/server";
 import { RELATIONSHIP_STATUS } from "../enums";
 import RESP_CODE from "../constants/resp-code";
 
@@ -32,7 +32,7 @@ export const getAllFriends = async (req, res) => {
 export const addFriend = async (req, res) => {
   const { addFriendCode } = req.query;
 
-  const curUser = await authenticationUser(req, res);
+  const curUser = await getUserByToken(req, res);
   const friend = await User.findOne({ add_friend_code: addFriendCode });
 
   if (!friend) {
@@ -67,7 +67,7 @@ export const updateStatusRelationship = async (req, res) => {
     return respFailure({ message: RELATIONSHIP_IS_NOT_EXISTS }, res);
   }
 
-  const curUser = await authenticationUser(req, res);
+  const curUser = await getUserByToken(req, res);
 
   relationship.action_user_id = curUser.id;
   relationship.status = status;

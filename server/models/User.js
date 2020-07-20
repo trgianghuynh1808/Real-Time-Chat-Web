@@ -5,7 +5,8 @@ import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import { _ } from "lodash";
 
-import { randomString } from "../utils";
+import { randomString, convertSecondsToDays } from "../utils";
+import { authConfig } from "../config";
 
 mongoose.Promise = global.Promise;
 
@@ -21,7 +22,6 @@ const userSchema = new mongoose.Schema({
     index: { unique: true },
   },
   password: { type: String, required: true },
-  token: { type: String },
   refresh_token: { type: String },
   status_caption: { type: String },
   add_friend_code: { type: String, index: { unique: true } },
@@ -78,32 +78,33 @@ userSchema.methods.sendMailForgotPassword = async function (newPassword) {
 };
 
 userSchema.methods.generateTokens = function () {
-  const token = jwt.sign(
-    {
-      email: this.email,
-      username: this.username,
-    },
-    process.env.SECRET,
-    {
-      expiresIn: process.env.EXPIRED_TOKEN,
-    }
-  );
+  const user = {
+    email: this.email,
+    username: this.username,
+  };
+
+  const token = jwt.sign(user, authConfig.tokenSecret, {
+    expiresIn: authConfig.tokenLife,
+  });
 
   let curDate = new Date();
-  curDate.setDate(curDate.getDate() + parseInt(process.env.EXPIRED_TOKEN_DAYS));
+  curDate.setDate(
+    curDate.getDate() + convertSecondsToDays(authConfig.refreshTokenLife)
+  );
   const refreshToken = jwt.sign(
     {
-      username: this.username,
+      ...user,
       expDate: curDate,
     },
-    process.env.SECRET,
+    authConfig.refreshTokenSecret,
     {
-      expiresIn: process.env.EXPIRED_TOKEN,
+      expiresIn: authConfig.refreshTokenLife,
     }
   );
 
-  this.token = token;
   this.refresh_token = refreshToken;
+
+  return { token, refresh_token: refreshToken };
 };
 
 userSchema.methods.toJSON = function () {
