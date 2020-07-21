@@ -22,9 +22,11 @@ const FriendList = ({ friendList }) => {
             </div>
             <div className="col-9 ml-3 cursor-pointer">
               <div className="font-weight-bold">{friend.name}</div>
-              <div className="friend-list__prev-chat">
-                <Emojione text={friend.statusMsg} />{" "}
-              </div>
+              {friend.statusMsg && (
+                <div className="friend-list__prev-chat">
+                  <Emojione text={friend.statusMsg} />{" "}
+                </div>
+              )}
             </div>
           </div>
         );

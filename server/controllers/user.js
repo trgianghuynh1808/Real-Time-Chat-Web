@@ -2,6 +2,7 @@ import { _ } from "lodash";
 import jwt from "jsonwebtoken";
 
 import User from "../models/User";
+import Relationship from "../models/Relationship";
 import { respFailure, respSuccess, getUserByToken } from "../utils/server";
 import { validatePassword, generateRandomPassword } from "../utils";
 import RESP_CODE from "../constants/resp-code";
@@ -233,6 +234,16 @@ export const getUserByFriendCode = async (req, res) => {
       add_friend_code: addFriendCode,
     });
 
+    const relationship = await Relationship.findOne({
+      $or: [
+        {
+          user_one_id: curUser.id,
+          user_two_id: user.id,
+        },
+        { user_one_id: user.id, user_two_id: curUser.id },
+      ],
+    });
+
     if (!user) return respFailure({ message: USER_IS_NOT_EXISTS }, res);
     if (user.username === curUser.username)
       return respFailure({ message: CANNOT_FIND_YOURSELF }, res);
@@ -240,7 +251,10 @@ export const getUserByFriendCode = async (req, res) => {
     return respSuccess(
       {
         message: GET_USER_BY_FRIEND_CODE_SUCCESS,
-        data: user.filterAtr(),
+        data: {
+          ...user.filterAtr(),
+          status_relationship: relationship ? relationship.status : null,
+        },
       },
       res
     );
