@@ -18,6 +18,7 @@ import {
   getAllFriends,
   addFriend,
   updateStatusRelationship,
+  getFriendInvitations,
 } from "../controllers/relationship";
 
 const router = express.Router();
@@ -41,6 +42,7 @@ router.post("/refresh-token", refreshToken);
 //-GET
 router.get("/friends", getAllFriends);
 router.get("/add-friend", addFriend);
+router.get("/get-friend-invitations", getFriendInvitations);
 //-POST
 router.post("/update-status-relationship", updateStatusRelationship);
 

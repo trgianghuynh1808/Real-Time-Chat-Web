@@ -110,11 +110,12 @@ userSchema.methods.generateTokens = function () {
 userSchema.methods.toJSON = function () {
   let obj = this.toObject();
   delete obj.password;
+  delete obj.refresh_token;
   return obj;
 };
 
 userSchema.methods.filterAtr = function (
-  filterArr = ["token", "refresh_token", "password", "_id"]
+  filterArr = ["refresh_token", "password", "_id"]
 ) {
   return _.omit(this.toObject(), filterArr);
 };

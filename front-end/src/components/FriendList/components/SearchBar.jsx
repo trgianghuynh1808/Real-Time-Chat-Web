@@ -25,31 +25,17 @@ const useDebounce = (value, delay) => {
 const renderStatusRelationship = (status, handleClick) => {
   switch (status) {
     case PENDING:
-      return (
-        <div className="col-4">
-          <div className="text-center text-col-gray">Đã gửi</div>
-        </div>
-      );
+      return <i className="fas fa-user-clock friend-list__icon "></i>;
     case ACCEPTED:
-      return (
-        <div className="col-4">
-          <div className="text-center text-success">Đã kết bạn</div>
-        </div>
-      );
+      return <i className="fas fa-user-friends friend-list__icon "></i>;
     case DECLINED:
-      return (
-        <div className="col-4">
-          <div className="text-center text-danger">Bị từ chối</div>
-        </div>
-      );
+      return <i className="fas fa-user-times friend-list__icon "></i>;
     default:
       return (
-        <div className="col-1">
-          <i
-            className="fas fa-user-plus friend-list__icon cursor-pointer"
-            onClick={handleClick}
-          ></i>
-        </div>
+        <i
+          className="fas fa-user-plus friend-list__icon icon-active cursor-pointer"
+          onClick={handleClick}
+        ></i>
       );
   }
 };
@@ -101,7 +87,7 @@ const SearchBar = ({ handleSearch, handleAddFriend }) => {
             />
             <span className="dot dot--online"></span>
           </div>
-          <div className="col-6 ml-3 cursor-pointer">
+          <div className="col-7 ml-3 cursor-pointer">
             <div className="font-weight-bold">
               {friend.nick_name || friend.username}
             </div>
@@ -111,11 +97,12 @@ const SearchBar = ({ handleSearch, handleAddFriend }) => {
               </div>
             )}
           </div>
-
-          {renderStatusRelationship(friend.status_relationship, () => {
-            handleAddFriend(friend.add_friend_code);
-            setSearchTerm("");
-          })}
+          <div className="col-1">
+            {renderStatusRelationship(friend.status_relationship, () => {
+              handleAddFriend(friend.add_friend_code);
+              setSearchTerm("");
+            })}
+          </div>
         </div>
       )}
     </Fragment>

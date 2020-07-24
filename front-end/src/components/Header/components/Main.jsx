@@ -1,23 +1,44 @@
-import React from "react";
+import React, { useState, Fragment } from "react";
 
-const Main = ({ curDate, handleLogOut }) => {
+import FriendInvitationsPopUp from "./FriendInvitationsPopUp";
+
+const Main = ({ curDate, handleLogOut, friendInvitations }) => {
+  const [openToolTip, setOpenToolTip] = useState(false);
+
+  const handleOpenToolTip = () => setOpenToolTip(true);
+
   return (
-    <div className="container-fluid">
-      <div className="row justify-content-between align-items-center">
-        <div className="col-4">
-          <i className="far fa-calendar-alt header__icon"></i>
-          <span className="ml-3">{curDate}</span>
-        </div>
-        <div className="col-1 d-flex align-items-center">
-          <i className="fas fa-bell header__icon float-right mr-3 cursor-pointer"></i>
+    <Fragment>
+      <div className="container-fluid">
+        <div className="row justify-content-between align-items-center">
+          <div className="col-4">
+            <i className="far fa-calendar-alt calender-icon"></i>
+            <span className="ml-3">{curDate}</span>
+          </div>
+          <div className="col-1 d-flex align-items-center">
+            <div className="row">
+              <div className="d-flex position-relative col-6">
+                <FriendInvitationsPopUp
+                  trigger={
+                    <i
+                      className="fas fa-users header__icon  cursor-pointer"
+                      onClick={handleOpenToolTip}
+                    ></i>
+                  }
+                  friendInvitations={friendInvitations}
+                />
+                <span className="badge text-center">2</span>
+              </div>
 
-          <i
-            className="fas fa-sign-out-alt header__icon cursor-pointer ml-2"
-            onClick={handleLogOut}
-          ></i>
+              <i
+                className="fas fa-sign-out-alt header__icon cursor-pointer col-6"
+                onClick={handleLogOut}
+              ></i>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 
