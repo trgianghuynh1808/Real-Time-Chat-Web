@@ -1,8 +1,15 @@
 import React, { useState, Fragment } from "react";
+import { isEmpty } from "lodash/fp";
 
 import FriendInvitationsPopUp from "./FriendInvitationsPopUp";
 
-const Main = ({ curDate, handleLogOut, friendInvitations }) => {
+const Main = ({
+  curDate,
+  handleLogOut,
+  friendInvitations,
+  handleAcceptFriendInvitation,
+  handleDeclinedFriendInvitation,
+}) => {
   const [openToolTip, setOpenToolTip] = useState(false);
 
   const handleOpenToolTip = () => setOpenToolTip(true);
@@ -26,8 +33,16 @@ const Main = ({ curDate, handleLogOut, friendInvitations }) => {
                     ></i>
                   }
                   friendInvitations={friendInvitations}
+                  handleAcceptFriendInvitation={handleAcceptFriendInvitation}
+                  handleDeclinedFriendInvitation={
+                    handleDeclinedFriendInvitation
+                  }
                 />
-                <span className="badge text-center">2</span>
+                {!isEmpty(friendInvitations) && (
+                  <span className="badge text-center">
+                    {friendInvitations.length}
+                  </span>
+                )}
               </div>
 
               <i

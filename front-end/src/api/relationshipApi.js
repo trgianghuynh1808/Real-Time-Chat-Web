@@ -7,6 +7,12 @@ const relationshipApi = {
   getFriendInvitations: () => {
     return axiosClient.get("/get-friend-invitations");
   },
+  updateStatusRelationship: (status, relationshipId) => {
+    return axiosClient.post("/update-status-relationship", {
+      status,
+      relationshipId,
+    });
+  },
 };
 
 export default relationshipApi;

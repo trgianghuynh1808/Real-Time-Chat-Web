@@ -36,7 +36,7 @@ export const addFriend = async (req, res) => {
   const curUser = await getUserByToken(req, res);
   const friend = await User.findOne({ add_friend_code: addFriendCode });
 
-  if (!friend) {
+  if (!friend || friend.id === curUser.id) {
     return respFailure({ message: ADD_FRIEND_CODE_INVALID }, res);
   }
 
@@ -62,7 +62,10 @@ export const addFriend = async (req, res) => {
 
 export const updateStatusRelationship = async (req, res) => {
   const { relationshipId, status } = req.body;
-  const relationship = await Relationship.findOne({ id: relationshipId });
+
+  const relationship = await Relationship.findOne({ id: relationshipId })
+    .populate("user_one_id")
+    .populate("user_two_id");
 
   if (!relationship || !status) {
     return respFailure({ message: RELATIONSHIP_IS_NOT_EXISTS }, res);

@@ -237,10 +237,10 @@ export const getUserByFriendCode = async (req, res) => {
     const relationship = await Relationship.findOne({
       $or: [
         {
-          user_one_id: curUser.id,
-          user_two_id: user.id,
+          user_one_id: curUser._id,
+          user_two_id: user._id,
         },
-        { user_one_id: user.id, user_two_id: curUser.id },
+        { user_one_id: user._id, user_two_id: curUser._id },
       ],
     });
 
