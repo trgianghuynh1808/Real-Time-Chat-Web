@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import InputField from "components/FormFields/InputField";
 import userApi from "api/userApi";
-import { saveToken } from "libs/token-libs";
+import { saveToken, saveRefreshToken } from "libs/token-libs";
 
 const Login = () => {
   const initialValues = {
@@ -24,7 +24,7 @@ const Login = () => {
             const resp = await userApi.login({ username, password });
             const { token, refresh_token } = resp.data;
             saveToken(token);
-            saveToken(refresh_token, "_refresh_real-time-chat");
+            saveRefreshToken(refresh_token);
             history.push("/chat");
           } catch (error) {
             resetForm();

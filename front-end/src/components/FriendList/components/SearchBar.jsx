@@ -2,6 +2,9 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Emojione } from "react-emoji-render";
 
 import Images from "constants/images";
+import { RELATIONSHIP_STATUS } from "enums";
+
+const { PENDING, ACCEPTED, DECLINED } = RELATIONSHIP_STATUS;
 
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -19,7 +22,25 @@ const useDebounce = (value, delay) => {
   return debouncedValue;
 };
 
-const SearchBar = ({ handleSearch }) => {
+const renderStatusRelationship = (status, handleClick) => {
+  switch (status) {
+    case PENDING:
+      return <i className="fas fa-user-clock friend-list__icon "></i>;
+    case ACCEPTED:
+      return <i className="fas fa-user-friends friend-list__icon "></i>;
+    case DECLINED:
+      return <i className="fas fa-user-times friend-list__icon "></i>;
+    default:
+      return (
+        <i
+          className="fas fa-user-plus friend-list__icon icon-active cursor-pointer"
+          onClick={handleClick}
+        ></i>
+      );
+  }
+};
+
+const SearchBar = ({ handleSearch, handleAddFriend }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [friend, setFriend] = useState(null);
 
@@ -49,6 +70,7 @@ const SearchBar = ({ handleSearch }) => {
               type="text"
               className="form-control"
               placeholder="Nhập mã code để kết bạn"
+              value={searchTerm}
               onChange={(event) => setSearchTerm(event.target.value)}
             />
           </div>
@@ -65,16 +87,21 @@ const SearchBar = ({ handleSearch }) => {
             />
             <span className="dot dot--online"></span>
           </div>
-          <div className="col-8 ml-3 cursor-pointer">
+          <div className="col-7 ml-3 cursor-pointer">
             <div className="font-weight-bold">
               {friend.nick_name || friend.username}
             </div>
-            <div className="friend-list__prev-chat">
-              <Emojione text={friend.status_caption} />
-            </div>
+            {friend.status_caption && (
+              <div className="friend-list__prev-chat">
+                <Emojione text={friend.status_caption} />
+              </div>
+            )}
           </div>
           <div className="col-1">
-            <i className="fas fa-user-plus friend-list__icon cursor-pointer"></i>
+            {renderStatusRelationship(friend.status_relationship, () => {
+              handleAddFriend(friend.add_friend_code);
+              setSearchTerm("");
+            })}
           </div>
         </div>
       )}

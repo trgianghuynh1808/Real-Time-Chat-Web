@@ -7,7 +7,7 @@ import jwtDecode from "jwt-decode";
 import "./App.scss";
 import "assets/styles/global.scss";
 import NotFound from "components/NotFound";
-import { getToken } from "libs/token-libs";
+import { getToken, getRefreshToken } from "libs/token-libs";
 
 const Chat = React.lazy(() => import("features/Chat"));
 const Login = React.lazy(() => import("features/Login"));
@@ -15,7 +15,7 @@ const Profile = React.lazy(() => import("features/Profile"));
 
 const checkAuth = () => {
   const token = getToken();
-  const refreshToken = getToken("_refresh_real-time-chat");
+  const refreshToken = getRefreshToken();
 
   if (!token || !refreshToken) {
     return false;
@@ -42,7 +42,7 @@ const App = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <BrowserRouter>
           <Switch>
-            <Redirect exact from="/" to="/account/login" />
+            <Redirect exact from="/" to="/chat" />
 
             <Route path="/account" component={Login} />
             <AuthRoute path="/chat" component={Chat} />

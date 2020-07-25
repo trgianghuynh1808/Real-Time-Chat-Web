@@ -1,9 +1,12 @@
 import { _ } from "lodash";
+import jwt from "jsonwebtoken";
 
 import User from "../models/User";
-import { respFailure, respSuccess, authenticationUser } from "../utils/server";
+import Relationship from "../models/Relationship";
+import { respFailure, respSuccess, getUserByToken } from "../utils/server";
 import { validatePassword, generateRandomPassword } from "../utils";
 import RESP_CODE from "../constants/resp-code";
+import { authConfig } from "../config";
 
 const {
   SERVER_ERROR,
@@ -18,6 +21,7 @@ const {
   UPDATE_NICK_NAME_SUCCESS,
   CHANGE_PASSWORD_SUCCESS,
   GET_USER_BY_FRIEND_CODE_SUCCESS,
+  REFRESH_TOKEN_SUCCESS,
 
   PASSWORD_INVALID,
   USER_ALREADY_EXISTS,
@@ -79,12 +83,12 @@ export const loginUser = async (req, res) => {
   if (!(await existsUser.comparePassword(password)))
     return respFailure({ message: PASSWORD_IS_WRONG }, res);
 
-  await existsUser.generateTokens();
+  const tokens = await existsUser.generateTokens();
 
   return existsUser
     .save()
-    .then((user) => {
-      return respSuccess({ message: LOGIN_SUCCESS, data: user }, res);
+    .then(() => {
+      return respSuccess({ message: LOGIN_SUCCESS, data: tokens }, res);
     })
     .catch((error) => {
       return respFailure({ message: SERVER_ERROR, error }, res);
@@ -115,7 +119,7 @@ export const forgotPassword = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    const curUser = await authenticationUser(req, res);
+    const curUser = await getUserByToken(req, res);
 
     return respSuccess(
       {
@@ -138,7 +142,7 @@ export const updateStatusCaption = async (req, res) => {
 
   if (!statusMsg)
     return respFailure({ message: STATUS_CAPTION_INVALID, error }, res);
-  const user = await authenticationUser(req, res);
+  const user = await getUserByToken(req, res);
 
   user.status_caption = statusMsg;
 
@@ -157,7 +161,7 @@ export const updateStatusCaption = async (req, res) => {
 
 export const getInfoUser = async (req, res) => {
   try {
-    const curUser = await authenticationUser(req, res);
+    const curUser = await getUserByToken(req, res);
 
     return respSuccess(
       {
@@ -183,7 +187,7 @@ export const updateNickNameUser = async (req, res) => {
 
   if (!nickName) return respFailure({ message: NICK_NAME_INVALID, error }, res);
 
-  const user = await authenticationUser(req, res);
+  const user = await getUserByToken(req, res);
 
   user.nick_name = nickName;
 
@@ -205,7 +209,7 @@ export const changePassword = async (req, res) => {
 
   if (!password) return respFailure({ message: PASSWORD_INVALID, error }, res);
 
-  const user = await authenticationUser(req, res);
+  const user = await getUserByToken(req, res);
   user.password = password;
 
   return user
@@ -225,9 +229,19 @@ export const getUserByFriendCode = async (req, res) => {
     return respFailure({ message: ADD_FRIEND_CODE_INVALID }, res);
 
   try {
-    const curUser = await authenticationUser(req, res);
+    const curUser = await getUserByToken(req, res);
     const user = await User.findOne({
       add_friend_code: addFriendCode,
+    });
+
+    const relationship = await Relationship.findOne({
+      $or: [
+        {
+          user_one_id: curUser._id,
+          user_two_id: user._id,
+        },
+        { user_one_id: user._id, user_two_id: curUser._id },
+      ],
     });
 
     if (!user) return respFailure({ message: USER_IS_NOT_EXISTS }, res);
@@ -237,7 +251,39 @@ export const getUserByFriendCode = async (req, res) => {
     return respSuccess(
       {
         message: GET_USER_BY_FRIEND_CODE_SUCCESS,
-        data: user.filterAtr(),
+        data: {
+          ...user.filterAtr(),
+          status_relationship: relationship ? relationship.status : null,
+        },
+      },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
+};
+
+export const refreshToken = async (req, res) => {
+  const { refreshToken } = req.body;
+
+  const user = await User.findOne({ refresh_token: refreshToken });
+
+  if (!user) return respFailure({ message: USER_IS_NOT_EXISTS }, res);
+
+  try {
+    await jwt.verify(refreshToken, authConfig.refreshTokenSecret);
+
+    const token = jwt.sign(
+      { email: user.email, username: user.username },
+      authConfig.tokenSecret,
+      {
+        expiresIn: authConfig.tokenLife,
+      }
+    );
+    return respSuccess(
+      {
+        message: REFRESH_TOKEN_SUCCESS,
+        data: { token },
       },
       res
     );

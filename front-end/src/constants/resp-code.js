@@ -11,4 +11,5 @@ export default {
   UPDATE_NICK_NAME_SUCCESS: "Thay đỏi nick name thành công",
   NICK_NAME_INVALID: "Nick name không hợp lệ!",
   CHANGE_PASSWORD_SUCCESS: "Đổi mật khẩu thành công",
+  ADD_FRIEND_SUCCESS: "Đã gửi lời mời kết bạn",
 };
