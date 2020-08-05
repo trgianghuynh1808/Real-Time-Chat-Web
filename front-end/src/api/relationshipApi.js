@@ -1,7 +1,7 @@
 import axiosClient from "./axiosClient";
 
 const relationshipApi = {
-  addFriend: (friendCode) => {
+  addFriend: friendCode => {
     return axiosClient.get(`/add-friend?addFriendCode=${friendCode}`);
   },
   getFriendInvitations: () => {
@@ -10,9 +10,12 @@ const relationshipApi = {
   updateStatusRelationship: (status, relationshipId) => {
     return axiosClient.post("/update-status-relationship", {
       status,
-      relationshipId,
+      relationshipId
     });
   },
+  getFriendOfUser: () => {
+    return axiosClient.get("/get-friend-of-user");
+  }
 };
 
 export default relationshipApi;

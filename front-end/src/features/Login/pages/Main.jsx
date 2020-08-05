@@ -5,11 +5,12 @@ import { useHistory } from "react-router-dom";
 import InputField from "components/FormFields/InputField";
 import userApi from "api/userApi";
 import { saveToken, saveRefreshToken } from "libs/token-libs";
+import { doFunctionWithEnter } from "utils";
 
 const Login = () => {
   const initialValues = {
     username: "",
-    password: "",
+    password: ""
   };
   const history = useHistory();
 
@@ -34,7 +35,7 @@ const Login = () => {
         fetchLogin();
       }}
     >
-      {(formikProps) => {
+      {formikProps => {
         return (
           <div className="limiter">
             <div className="container-login100">
@@ -58,6 +59,11 @@ const Login = () => {
                     type={"password"}
                     autoComplete={"new-password"}
                     pattern={"^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$"}
+                    onKeyPress={event => {
+                      doFunctionWithEnter(event, () => {
+                        formikProps.handleSubmit();
+                      });
+                    }}
                   />
                   <div className="flex-sb-m w-full p-b-30">
                     <div className="contact100-form-checkbox">

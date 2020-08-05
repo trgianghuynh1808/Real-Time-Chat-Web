@@ -12,13 +12,14 @@ import {
   changePassword,
   getUserByFriendCode,
   refreshToken,
+  getFriendsOfUser
 } from "../controllers/user";
 
 import {
   getAllFriends,
   addFriend,
   updateStatusRelationship,
-  getFriendInvitations,
+  getFriendInvitations
 } from "../controllers/relationship";
 
 const router = express.Router();
@@ -30,6 +31,7 @@ router.get("/get-user-by-friend-code", getUserByFriendCode);
 router.get("/get-info-user", getInfoUser);
 router.get("/forgot-password", forgotPassword);
 router.get("/get-current-user", getCurrentUser);
+router.get("/get-friend-of-user", getFriendsOfUser);
 //-POST
 router.post("/update-status-caption", updateStatusCaption);
 router.post("/update-nick-name-user", updateNickNameUser);
