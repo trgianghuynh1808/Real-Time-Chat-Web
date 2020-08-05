@@ -1,9 +1,14 @@
 import React from "react";
 import { Emojione } from "react-emoji-render";
+import { isEmpty } from "lodash/fp";
 
 import Images from "constants/images";
 
 const FriendList = ({ friendList }) => {
+  if (!friendList || isEmpty(friendList)) {
+    return <div className="mt-3 text-center"> Hãy kiếm thêm bạn bè!</div>;
+  }
+
   return (
     <div className="mt-3">
       {friendList.map((friend, index) => {

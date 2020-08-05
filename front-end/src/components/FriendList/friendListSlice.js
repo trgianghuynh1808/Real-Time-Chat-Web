@@ -20,7 +20,7 @@ const friendListSlice = createSlice({
   }
 });
 
-const { actions, reducer } = friendListSlice;
+const { reducer } = friendListSlice;
 
 export const friendListAsync = { fetchFriendOfUser };
 

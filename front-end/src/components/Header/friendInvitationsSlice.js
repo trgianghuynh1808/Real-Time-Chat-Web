@@ -13,7 +13,7 @@ const fetchFriendInvitations = createAsyncThunk(
 
 const fetchUpdateStatusRelationship = createAsyncThunk(
   "friendInvitations/fetchUpdateStatusRelationship",
-  async (body) => {
+  async body => {
     const { status, relationshipId } = body;
 
     const resp = await relationshipApi.updateStatusRelationship(
@@ -34,18 +34,18 @@ const friendInvitationsSlice = createSlice({
 
       if (isEmpty(data)) return [];
 
-      return data.map((item) => {
+      return data.map(item => {
         const {
           id: relationshipId,
           action_user_id: actionUserId,
           user_one_id: userOne,
-          user_two_id: userTwo,
+          user_two_id: userTwo
         } = item;
 
         if (userOne.id === actionUserId) {
           return {
             ...userOne,
-            relationshipId,
+            relationshipId
           };
         }
 
@@ -57,16 +57,16 @@ const friendInvitationsSlice = createSlice({
       const relationships = state;
 
       return relationships.filter(
-        (relationship) => relationship.relationshipId !== relationshipUpdated.id
+        relationship => relationship.relationshipId !== relationshipUpdated.id
       );
-    },
-  },
+    }
+  }
 });
 
-const { actions, reducer } = friendInvitationsSlice;
+const { reducer } = friendInvitationsSlice;
 export const relationshipAsync = {
   fetchFriendInvitations,
-  fetchUpdateStatusRelationship,
+  fetchUpdateStatusRelationship
 };
 
 export default reducer;

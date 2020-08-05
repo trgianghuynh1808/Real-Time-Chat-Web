@@ -8,9 +8,9 @@ const Main = ({
   handleLogOut,
   friendInvitations,
   handleAcceptFriendInvitation,
-  handleDeclinedFriendInvitation,
+  handleDeclinedFriendInvitation
 }) => {
-  const [openToolTip, setOpenToolTip] = useState(false);
+  const [, setOpenToolTip] = useState(false);
 
   const handleOpenToolTip = () => setOpenToolTip(true);
 
