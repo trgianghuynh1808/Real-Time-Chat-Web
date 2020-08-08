@@ -128,6 +128,7 @@ export const getCurrentUser = async (req, res) => {
       {
         message: GET_CURRENT_USER_SUCCESS,
         data: {
+          id: curUser.id,
           username: curUser.username,
           status_caption: curUser.status_caption,
           nick_name: curUser.nick_name

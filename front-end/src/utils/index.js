@@ -18,7 +18,7 @@ export const formatAMPM = () => {
   );
 };
 
-export const getMsgByRespCode = (code) => {
+export const getMsgByRespCode = code => {
   return get(code, RESP_CODE);
 };
 
@@ -27,3 +27,22 @@ export const doFunctionWithEnter = (event, func) =>
   event.key === "Enter" &&
   typeof func === "function" &&
   func();
+
+export const convertStrToTime = dateStr => {
+  const date = new Date(dateStr);
+
+  let hour = date.getHours() + "";
+  let minutes = date.getMinutes() + "";
+
+  hour = checkZero(hour);
+  minutes = checkZero(minutes);
+
+  return `${hour}:${minutes}`;
+};
+
+const checkZero = str => {
+  if (str.length === 1) {
+    str = "0" + str;
+  }
+  return str;
+};

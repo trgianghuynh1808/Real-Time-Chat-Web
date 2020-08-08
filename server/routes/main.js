@@ -22,6 +22,8 @@ import {
   getFriendInvitations
 } from "../controllers/relationship";
 
+import { createMessage, getConversation } from "../controllers/message";
+
 const router = express.Router();
 
 //User
@@ -47,5 +49,11 @@ router.get("/add-friend", addFriend);
 router.get("/get-friend-invitations", getFriendInvitations);
 //-POST
 router.post("/update-status-relationship", updateStatusRelationship);
+
+//Message
+//-GET
+router.get("/get-converstation", getConversation);
+//POST
+router.post("/create-message", createMessage);
 
 export default router;

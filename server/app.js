@@ -76,10 +76,6 @@ io.on("connection", socket => {
   socket.on("addNewFriend", () => {
     io.emit("addNewFriend");
   });
-
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
 });
 
 app.use(TokenCheckMiddleware);
