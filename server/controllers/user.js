@@ -25,6 +25,7 @@ const {
   GET_USER_BY_FRIEND_CODE_SUCCESS,
   REFRESH_TOKEN_SUCCESS,
   GET_FRIEND_OF_USER_SUCCESS,
+  GET_USER_BY_ID_SUCCESS,
 
   PASSWORD_INVALID,
   USER_ALREADY_EXISTS,
@@ -332,4 +333,52 @@ export const getFriendsOfUser = async (req, res) => {
     },
     res
   );
+};
+
+export const getUserById = async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    const user = await User.findOne({ id: userId });
+
+    return respSuccess({ message: GET_USER_BY_ID_SUCCESS, data: user }, res);
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
+};
+
+export const getUserOfConverstation = async (req, res) => {
+  const { userId } = req.query;
+  const curUser = await getUserByToken(req, res);
+
+  try {
+    const user = await User.findOne({ id: userId });
+    const curRelationship = await Relationship.findOne({
+      $or: [
+        {
+          user_two_id: curUser._id,
+          user_one_id: user._id
+        },
+        {
+          user_two_id: user._id,
+          user_one_id: curUser._id
+        }
+      ],
+      status: ACCEPTED
+    });
+
+    return respSuccess(
+      {
+        message: GET_USER_BY_ID_SUCCESS,
+        data: {
+          relationship_id: curRelationship.id,
+          username: user.username,
+          nick_name: user.nick_name
+        }
+      },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
 };

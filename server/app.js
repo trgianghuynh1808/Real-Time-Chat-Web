@@ -76,6 +76,10 @@ io.on("connection", socket => {
   socket.on("addNewFriend", () => {
     io.emit("addNewFriend");
   });
+
+  socket.on("createMessage", newMsg => {
+    io.emit("showMessage", newMsg);
+  });
 });
 
 app.use(TokenCheckMiddleware);

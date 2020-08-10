@@ -5,6 +5,7 @@ import userProfileSlice from "features/Profile/userProfileSlice";
 import friendInvitationsSlice from "components/Header/friendInvitationsSlice";
 import friendListSlice from "components/FriendList/friendListSlice";
 import converstationSlice from "features/Chat/converstationSlice";
+import curFriendSlice from "components/FriendList/curFriendSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,7 +13,8 @@ const store = configureStore({
     userProfile: userProfileSlice,
     friendInvitations: friendInvitationsSlice,
     friendList: friendListSlice,
-    converstation: converstationSlice
+    converstation: converstationSlice,
+    curFriend: curFriendSlice
   }
 });
 

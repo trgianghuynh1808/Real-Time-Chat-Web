@@ -7,7 +7,6 @@ import Layout from "components/Layout";
 
 const Chat = () => {
   const match = useRouteMatch();
-
   return (
     <Switch>
       <Layout>

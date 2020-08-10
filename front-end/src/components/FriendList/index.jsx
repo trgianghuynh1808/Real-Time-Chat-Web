@@ -7,8 +7,9 @@ import FriendListComponent from "./components/FriendList";
 import SearchBar from "./components/SearchBar";
 import userApi from "api/userApi";
 import relationshipApi from "api/relationshipApi";
-import { friendListAsync } from "components/FriendList/friendListSlice";
+import { friendListAsync } from "./friendListSlice";
 import { showInfoToast } from "libs/toast-libs";
+import { curFriendAsync } from "./curFriendSlice.js";
 
 const FriendList = () => {
   const socket = io(process.env.REACT_APP_WS_SERVER_URL);
@@ -36,13 +37,20 @@ const FriendList = () => {
     return socket.emit("sendFriendInvitation");
   };
 
+  const handleSelectConverstation = userId => {
+    dispatch(curFriendAsync.fetchUserOfConverstation(userId));
+  };
+
   return (
     <div className="friend-list">
       <SearchBar
         handleSearch={handleSearch}
         handleAddFriend={handleAddFriend}
       />
-      <FriendListComponent friendList={friendList} />
+      <FriendListComponent
+        friendList={friendList}
+        handleSelectConverstation={handleSelectConverstation}
+      />
     </div>
   );
 };

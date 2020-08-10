@@ -4,7 +4,7 @@ import { isEmpty } from "lodash/fp";
 
 import Images from "constants/images";
 
-const FriendList = ({ friendList }) => {
+const FriendList = ({ friendList, handleSelectConverstation }) => {
   if (!friendList || isEmpty(friendList)) {
     return <div className="mt-3 text-center"> Hãy kiếm thêm bạn bè!</div>;
   }
@@ -16,8 +16,9 @@ const FriendList = ({ friendList }) => {
         return (
           <div
             className={`row align-items-center friend-list__item ${index ===
-              0 && "friend-list__item--active"}`}
+              0 && "friend-list__item--active"} cursor-pointer`}
             key={index}
+            onClick={() => handleSelectConverstation(friend.id)}
           >
             <div className="col-1 position-relative">
               <img

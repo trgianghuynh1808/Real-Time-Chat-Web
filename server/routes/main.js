@@ -12,7 +12,9 @@ import {
   changePassword,
   getUserByFriendCode,
   refreshToken,
-  getFriendsOfUser
+  getFriendsOfUser,
+  getUserById,
+  getUserOfConverstation
 } from "../controllers/user";
 
 import {
@@ -34,6 +36,8 @@ router.get("/get-info-user", getInfoUser);
 router.get("/forgot-password", forgotPassword);
 router.get("/get-current-user", getCurrentUser);
 router.get("/get-friend-of-user", getFriendsOfUser);
+router.get("/get-user-by-id", getUserById);
+router.get("/get-user-of-converstation", getUserOfConverstation);
 //-POST
 router.post("/update-status-caption", updateStatusCaption);
 router.post("/update-nick-name-user", updateNickNameUser);
