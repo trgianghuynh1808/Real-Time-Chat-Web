@@ -7,7 +7,9 @@ import { respFailure, respSuccess, getUserByToken } from "../utils/server";
 import { validatePassword, generateRandomPassword } from "../utils";
 import RESP_CODE from "../constants/resp-code";
 import { authConfig } from "../config";
+import { RELATIONSHIP_STATUS } from "../enums";
 
+const { ACCEPTED } = RELATIONSHIP_STATUS;
 const {
   SERVER_ERROR,
 
@@ -22,6 +24,8 @@ const {
   CHANGE_PASSWORD_SUCCESS,
   GET_USER_BY_FRIEND_CODE_SUCCESS,
   REFRESH_TOKEN_SUCCESS,
+  GET_FRIEND_OF_USER_SUCCESS,
+  GET_USER_BY_ID_SUCCESS,
 
   PASSWORD_INVALID,
   USER_ALREADY_EXISTS,
@@ -33,15 +37,15 @@ const {
   NICK_NAME_INVALID,
   ADD_FRIEND_CODE_INVALID,
   USER_IS_NOT_EXISTS,
-  CANNOT_FIND_YOURSELF,
+  CANNOT_FIND_YOURSELF
 } = RESP_CODE;
 
 export const getUsers = async (req, res) => {
   return User.find()
-    .then((users) => {
+    .then(users => {
       return respSuccess({ message: GET_USERS_SUCCESS, data: users }, res);
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -58,15 +62,15 @@ export const registerUser = async (req, res) => {
   const newUser = new User({
     email,
     username,
-    password,
+    password
   });
 
   return newUser
     .save()
-    .then((newUser) => {
+    .then(newUser => {
       return respSuccess({ message: REGISTER_SUCCESS, data: newUser }, res);
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -90,7 +94,7 @@ export const loginUser = async (req, res) => {
     .then(() => {
       return respSuccess({ message: LOGIN_SUCCESS, data: tokens }, res);
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -109,10 +113,10 @@ export const forgotPassword = async (req, res) => {
 
   return user
     .save()
-    .then((user) => {
+    .then(user => {
       return respSuccess({ message: FORGOT_PASSWORD_SUCCESS, data: user }, res);
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -125,10 +129,11 @@ export const getCurrentUser = async (req, res) => {
       {
         message: GET_CURRENT_USER_SUCCESS,
         data: {
+          id: curUser.id,
           username: curUser.username,
           status_caption: curUser.status_caption,
-          nick_name: curUser.nick_name,
-        },
+          nick_name: curUser.nick_name
+        }
       },
       res
     );
@@ -148,13 +153,13 @@ export const updateStatusCaption = async (req, res) => {
 
   return user
     .save()
-    .then((user) => {
+    .then(user => {
       return respSuccess(
         { message: UPDATE_STATUS_CAPTION_SUCCESS, data: user },
         res
       );
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -172,8 +177,8 @@ export const getInfoUser = async (req, res) => {
           email: curUser.email,
           status_caption: curUser.status_caption,
           add_friend_code: curUser.add_friend_code,
-          nick_name: curUser.nick_name,
-        },
+          nick_name: curUser.nick_name
+        }
       },
       res
     );
@@ -193,13 +198,13 @@ export const updateNickNameUser = async (req, res) => {
 
   return user
     .save()
-    .then((user) => {
+    .then(user => {
       return respSuccess(
         { message: UPDATE_NICK_NAME_SUCCESS, data: user },
         res
       );
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -214,10 +219,10 @@ export const changePassword = async (req, res) => {
 
   return user
     .save()
-    .then((user) => {
+    .then(user => {
       return respSuccess({ message: CHANGE_PASSWORD_SUCCESS, data: user }, res);
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -231,17 +236,17 @@ export const getUserByFriendCode = async (req, res) => {
   try {
     const curUser = await getUserByToken(req, res);
     const user = await User.findOne({
-      add_friend_code: addFriendCode,
+      add_friend_code: addFriendCode
     });
 
     const relationship = await Relationship.findOne({
       $or: [
         {
           user_one_id: curUser._id,
-          user_two_id: user._id,
+          user_two_id: user._id
         },
-        { user_one_id: user._id, user_two_id: curUser._id },
-      ],
+        { user_one_id: user._id, user_two_id: curUser._id }
+      ]
     });
 
     if (!user) return respFailure({ message: USER_IS_NOT_EXISTS }, res);
@@ -253,8 +258,8 @@ export const getUserByFriendCode = async (req, res) => {
         message: GET_USER_BY_FRIEND_CODE_SUCCESS,
         data: {
           ...user.filterAtr(),
-          status_relationship: relationship ? relationship.status : null,
-        },
+          status_relationship: relationship ? relationship.status : null
+        }
       },
       res
     );
@@ -277,13 +282,100 @@ export const refreshToken = async (req, res) => {
       { email: user.email, username: user.username },
       authConfig.tokenSecret,
       {
-        expiresIn: authConfig.tokenLife,
+        expiresIn: authConfig.tokenLife
       }
     );
     return respSuccess(
       {
         message: REFRESH_TOKEN_SUCCESS,
-        data: { token },
+        data: { token }
+      },
+      res
+    );
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
+};
+
+export const getFriendsOfUser = async (req, res) => {
+  const user = await getUserByToken(req, res);
+  let data;
+
+  const relationships = await Relationship.find({
+    status: ACCEPTED,
+    $or: [
+      {
+        user_one_id: user._id
+      },
+      { user_two_id: user._id }
+    ]
+  });
+
+  if (!relationships) data = [];
+
+  const userIds = relationships.map(relationship => {
+    if (relationship.user_one_id.equals(user._id))
+      return relationship.user_two_id;
+    else {
+      return relationship.user_one_id;
+    }
+  });
+
+  const friends = await User.find({ _id: { $in: userIds } });
+
+  if (!friends) return respFailure({ message: SERVER_ERROR }, res);
+  data = friends;
+
+  return respSuccess(
+    {
+      message: GET_FRIEND_OF_USER_SUCCESS,
+      data
+    },
+    res
+  );
+};
+
+export const getUserById = async (req, res) => {
+  const { userId } = req.query;
+
+  try {
+    const user = await User.findOne({ id: userId });
+
+    return respSuccess({ message: GET_USER_BY_ID_SUCCESS, data: user }, res);
+  } catch (error) {
+    return respFailure({ message: SERVER_ERROR, error }, res);
+  }
+};
+
+export const getUserOfConverstation = async (req, res) => {
+  const { userId } = req.query;
+  const curUser = await getUserByToken(req, res);
+
+  try {
+    const user = await User.findOne({ id: userId });
+    const curRelationship = await Relationship.findOne({
+      $or: [
+        {
+          user_two_id: curUser._id,
+          user_one_id: user._id
+        },
+        {
+          user_two_id: user._id,
+          user_one_id: curUser._id
+        }
+      ],
+      status: ACCEPTED
+    });
+
+    return respSuccess(
+      {
+        message: GET_USER_BY_ID_SUCCESS,
+        data: {
+          relationship_id: curRelationship.id,
+          id: user.id,
+          username: user.username,
+          nick_name: user.nick_name
+        }
       },
       res
     );

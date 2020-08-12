@@ -26,7 +26,7 @@ const PasswordFiledComponent = ({ field, label = "", ...other }) => {
 const ProfileInfo = ({
   userProfile,
   handleUpdateNickName,
-  handleChangePassword,
+  handleChangePassword
 }) => {
   const [curNickName, setCurNickname] = useState("");
 
@@ -62,7 +62,7 @@ const ProfileInfo = ({
     add_friend_code: addFriendCode,
     username,
     email,
-    nick_name: nickName,
+    nick_name: nickName
   } = userProfile;
 
   return (
@@ -75,7 +75,7 @@ const ProfileInfo = ({
           </div>
         </div>
         <div className="row justify-content-center mt-3">
-          <div className="input-group col-3">
+          <div className="input-group col-6 col-md-3 col-lg-5">
             <input
               type="text"
               className="form-control text-center py-2 border-right-0 border"
@@ -95,9 +95,9 @@ const ProfileInfo = ({
             </span>
           </div>
         </div>
-        <div className="container">
+        <div className="container-fluid">
           <div className="row info-user-wrp row justify-content-center">
-            <div className="col-4 border-right ">
+            <div className="col-md-4 col-lg-12  ">
               <h6 className="font-weight-bold text-capitalize text-center">
                 Thông tin tài khoản
               </h6>
@@ -108,7 +108,7 @@ const ProfileInfo = ({
                     type="text"
                     className="form-control text-center py-2 border-right-0 border"
                     value={curNickName}
-                    onChange={(event) => {
+                    onChange={event => {
                       setCurNickname(event.target.value);
                     }}
                   />
@@ -151,13 +151,13 @@ const ProfileInfo = ({
             <Formik
               initialValues={{
                 password: "",
-                confirmPassword: "",
+                confirmPassword: ""
               }}
               onSubmit={handleSubmitForm}
             >
-              {(formikProps) => {
+              {formikProps => {
                 return (
-                  <div className="col-4">
+                  <div className="col-md-4 col-lg-12 change-password-wrp">
                     <h6 className="font-weight-bold text-capitalize text-center">
                       Đổi mật khẩu
                     </h6>

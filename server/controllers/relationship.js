@@ -4,28 +4,44 @@ import { respFailure, respSuccess, getUserByToken } from "../utils/server";
 import { RELATIONSHIP_STATUS } from "../enums";
 import RESP_CODE from "../constants/resp-code";
 
-const { PENDING } = RELATIONSHIP_STATUS;
+const { PENDING, ACCEPTED } = RELATIONSHIP_STATUS;
 const {
   SERVER_ERROR,
 
   UPDATE_STATUS_SUCCESS,
   GET_RELATIONSHIPS_SUCCESS,
   ADD_FRIEND_SUCCESS,
-  GET_FRIEND_INVITATIONS,
+  GET_FRIEND_INVITATIONS_SUCCESS,
+  GET_FRIEND_OF_USER_SUCCESS,
 
   ADD_FRIEND_CODE_INVALID,
-  RELATIONSHIP_IS_NOT_EXISTS,
+  RELATIONSHIP_IS_NOT_EXISTS
 } = RESP_CODE;
+
+const findRelationshipByStatus = async (status, user) => {
+  return await Relationship.find({
+    action_user_id: { $ne: user.id },
+    $or: [
+      {
+        user_two_id: user._id
+      },
+      { user_one_id: user._id }
+    ],
+    status
+  })
+    .populate("user_one_id")
+    .populate("user_two_id");
+};
 
 export const getAllFriends = async (req, res) => {
   return Relationship.find()
-    .then((relationships) => {
+    .then(relationships => {
       return respSuccess(
         { message: GET_RELATIONSHIPS_SUCCESS, data: relationships },
         res
       );
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -44,18 +60,18 @@ export const addFriend = async (req, res) => {
     user_one_id: curUser._id,
     user_two_id: friend._id,
     status: PENDING,
-    action_user_id: curUser.id,
+    action_user_id: curUser.id
   });
 
   return newRelationship
     .save()
-    .then((relationship) => {
+    .then(relationship => {
       return respSuccess(
         { message: ADD_FRIEND_SUCCESS, data: relationship },
         res
       );
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -78,13 +94,13 @@ export const updateStatusRelationship = async (req, res) => {
 
   return relationship
     .save()
-    .then((relationship) => {
+    .then(relationship => {
       return respSuccess(
         { message: UPDATE_STATUS_SUCCESS, data: relationship },
         res
       );
     })
-    .catch((error) => {
+    .catch(error => {
       return respFailure({ message: SERVER_ERROR, error }, res);
     });
 };
@@ -92,21 +108,12 @@ export const updateStatusRelationship = async (req, res) => {
 export const getFriendInvitations = async (req, res) => {
   const user = await getUserByToken(req, res);
 
-  return Relationship.find({
-    action_user_id: { $ne: user.id },
-    $or: [
-      {
-        user_two_id: user._id,
-      },
-      { user_one_id: user._id },
-    ],
-    status: PENDING,
-  })
-    .populate("user_one_id")
-    .populate("user_two_id")
-    .exec((err, data) => {
-      if (err) return respFailure({ message: SERVER_ERROR, err }, res);
+  const friendInvitations = await findRelationshipByStatus(PENDING, user);
 
-      return respSuccess({ message: GET_FRIEND_INVITATIONS, data }, res);
-    });
+  if (!friendInvitations) return respFailure({ message: SERVER_ERROR }, res);
+
+  return respSuccess(
+    { message: GET_FRIEND_INVITATIONS_SUCCESS, data: friendInvitations },
+    res
+  );
 };

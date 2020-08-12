@@ -1,6 +1,7 @@
 import React from "react";
 import Popup from "reactjs-popup";
 import { isEmpty } from "lodash/fp";
+import { isMobile } from "react-device-detect";
 
 import Images from "constants/images";
 
@@ -8,7 +9,7 @@ const FriendInvitationsPopUp = ({
   trigger,
   friendInvitations,
   handleAcceptFriendInvitation,
-  handleDeclinedFriendInvitation,
+  handleDeclinedFriendInvitation
 }) => {
   return (
     <Popup
@@ -16,6 +17,7 @@ const FriendInvitationsPopUp = ({
       closeOnDocumentClick={true}
       closeOnEscape={true}
       position="bottom center"
+      contentStyle={isMobile ? { width: "80%" } : {}}
     >
       <div className="container p-2">
         {isEmpty(friendInvitations) ? (
@@ -31,10 +33,10 @@ const FriendInvitationsPopUp = ({
                     className="avatar-circle"
                   />
                 </div>
-                <div className="col-5">
+                <div className="col-8 col-md-5 text-center">
                   {friendInvitation.nickname || friendInvitation.username}
                 </div>
-                <div className="col-2">
+                <div className="col-6 col-md-2 text-center">
                   <i
                     className="fas fa-check text-success cursor-pointer"
                     onClick={() => {
@@ -44,7 +46,7 @@ const FriendInvitationsPopUp = ({
                     }}
                   ></i>
                 </div>
-                <div className="col-2">
+                <div className="col-6 col-md-2 text-center">
                   <i
                     className="fas fa-times text-danger cursor-pointer"
                     onClick={() => {

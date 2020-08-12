@@ -1,37 +1,51 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import io from "socket.io-client";
+import { isMobile } from "react-device-detect";
 
 import "./style.scss";
 import FriendListComponent from "./components/FriendList";
+import FriendListMobileComponent from "./components/FriendListMobile";
 import SearchBar from "./components/SearchBar";
-import Images from "constants/images";
 import userApi from "api/userApi";
 import relationshipApi from "api/relationshipApi";
-
-const FRIEND_LIST = [
-  {
-    name: "Hoàng Thượng",
-    statusMsg: "Hn t bùn :(",
-    avatar: Images.AVATAR_DEF1,
-  },
-  {
-    name: "Hoàng Thượng",
-    statusMsg: "Hn t bùn :(",
-    avatar: Images.AVATAR_DEF1,
-  },
-  {
-    name: "Hoàng Thượng",
-    statusMsg: "Hn t bùn :(",
-    avatar: Images.AVATAR_DEF1,
-  },
-];
+import { friendListAsync } from "./friendListSlice";
+import { showInfoToast } from "libs/toast-libs";
+import { curFriendAsync } from "./curFriendSlice.js";
 
 const FriendList = () => {
-  const handleSearch = async (addFriendCode) => {
+  const socket = io(process.env.REACT_APP_WS_SERVER_URL);
+  const dispatch = useDispatch();
+  const friendList = useSelector(state => state.friendList);
+  const curFriend = useSelector(state => state.curFriend);
+
+  useEffect(() => {
+    dispatch(friendListAsync.fetchFriendOfUser());
+  }, [dispatch]);
+
+  useEffect(() => {
+    socket.on("addNewFriend", () => {
+      dispatch(friendListAsync.fetchFriendOfUser());
+      showInfoToast("Bạn đã có thêm bạn mới ^^");
+    });
+
+    return () => {
+      socket.off("addNewFriend");
+    };
+  }, [socket, dispatch]);
+
+  const handleSearch = async addFriendCode => {
     return await userApi.getUserByFriendCode(addFriendCode);
   };
 
-  const handleAddFriend = async (addFriendCode) => {
-    return await relationshipApi.addFriend(addFriendCode);
+  const handleAddFriend = async addFriendCode => {
+    await relationshipApi.addFriend(addFriendCode);
+
+    return socket.emit("sendFriendInvitation");
+  };
+
+  const handleSelectConverstation = userId => {
+    dispatch(curFriendAsync.fetchUserOfConverstation(userId));
   };
 
   return (
@@ -40,7 +54,19 @@ const FriendList = () => {
         handleSearch={handleSearch}
         handleAddFriend={handleAddFriend}
       />
-      <FriendListComponent friendList={FRIEND_LIST} />
+      {isMobile ? (
+        <FriendListMobileComponent
+          friendList={friendList}
+          handleSelectConverstation={handleSelectConverstation}
+          curFriend={curFriend}
+        />
+      ) : (
+        <FriendListComponent
+          friendList={friendList}
+          handleSelectConverstation={handleSelectConverstation}
+          curFriend={curFriend}
+        />
+      )}
     </div>
   );
 };

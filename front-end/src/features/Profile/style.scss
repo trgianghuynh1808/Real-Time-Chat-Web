@@ -1,5 +1,8 @@
+@import "App.scss";
+
 .profile-wrp {
   margin-top: 50px;
+  margin-bottom: 20px;
 
   .avatar-wrp {
     &:hover .avatar {
@@ -30,5 +33,11 @@
 
   .info-user-wrp {
     margin-top: 80px;
+  }
+
+  .change-password-wrp {
+    @include tablet {
+      margin-top: 20px;
+    }
   }
 }
