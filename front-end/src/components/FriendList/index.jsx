@@ -15,6 +15,7 @@ const FriendList = () => {
   const socket = io(process.env.REACT_APP_WS_SERVER_URL);
   const dispatch = useDispatch();
   const friendList = useSelector(state => state.friendList);
+  const curFriend = useSelector(state => state.curFriend);
 
   useEffect(() => {
     dispatch(friendListAsync.fetchFriendOfUser());
@@ -25,6 +26,10 @@ const FriendList = () => {
       dispatch(friendListAsync.fetchFriendOfUser());
       showInfoToast("Bạn đã có thêm bạn mới ^^");
     });
+
+    return () => {
+      socket.off("addNewFriend");
+    };
   }, [socket, dispatch]);
 
   const handleSearch = async addFriendCode => {
@@ -50,6 +55,7 @@ const FriendList = () => {
       <FriendListComponent
         friendList={friendList}
         handleSelectConverstation={handleSelectConverstation}
+        curFriend={curFriend}
       />
     </div>
   );

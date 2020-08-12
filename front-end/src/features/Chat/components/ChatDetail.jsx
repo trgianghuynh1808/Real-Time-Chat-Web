@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { isEmpty } from "lodash/fp";
+import { Emojione } from "react-emoji-render";
 
 import Images from "constants/images";
 import { convertStrToTime, doFunctionWithEnter } from "utils";
@@ -48,7 +49,7 @@ const ChatDetail = ({
                       alt="avatar-def"
                     />
                     <div className="speech dark text-light ">
-                      {item.message}
+                      <Emojione text={item.message} />
                     </div>
                   </div>
                   <div className="row ">
@@ -67,7 +68,7 @@ const ChatDetail = ({
                 id={converstation.length - 1 === index ? "last-msg" : ""}
               >
                 <div className="speech blue text-light ">
-                  {item.message}
+                  <Emojione text={item.message} />
                   <span className="time time-right">
                     {convertStrToTime(item.createdAt)}
                   </span>

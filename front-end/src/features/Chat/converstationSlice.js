@@ -34,7 +34,7 @@ const messageSlice = createSlice({
 
       state.push(newMsg);
     },
-    clearStore: () => {
+    clearConverstationStore: () => {
       return [];
     }
   },
@@ -65,7 +65,7 @@ const messageSlice = createSlice({
 });
 
 const { actions, reducer } = messageSlice;
-export const { createMessage, clearStore } = actions;
+export const { createMessage, clearConverstationStore } = actions;
 export const messageAsync = { fetchConverstation, fetchCreateMessage };
 
 export default reducer;

@@ -372,6 +372,7 @@ export const getUserOfConverstation = async (req, res) => {
         message: GET_USER_BY_ID_SUCCESS,
         data: {
           relationship_id: curRelationship.id,
+          id: user.id,
           username: user.username,
           nick_name: user.nick_name
         }

@@ -1,5 +1,6 @@
 import React, { useState, Fragment } from "react";
 import { isEmpty } from "lodash/fp";
+import { isMobile } from "react-device-detect";
 
 import FriendInvitationsPopUp from "./FriendInvitationsPopUp";
 
@@ -8,7 +9,9 @@ const Main = ({
   handleLogOut,
   friendInvitations,
   handleAcceptFriendInvitation,
-  handleDeclinedFriendInvitation
+  handleDeclinedFriendInvitation,
+  handleGotoChatPage,
+  handleGoToProfilePage
 }) => {
   const [, setOpenToolTip] = useState(false);
 
@@ -18,17 +21,29 @@ const Main = ({
     <Fragment>
       <div className="container-fluid">
         <div className="row justify-content-between align-items-center">
-          <div className="col-4">
+          <div className="col-4 col-md-4">
             <i className="far fa-calendar-alt calender-icon"></i>
             <span className="ml-3">{curDate}</span>
           </div>
-          <div className="col-1 d-flex align-items-center">
-            <div className="row">
-              <div className="d-flex position-relative col-6">
+          <div className="col-6 col-md-1 ">
+            <div className="row justify-content-end">
+              <div className="d-flex position-relative col-10 col-md-11 ">
+                {isMobile && (
+                  <Fragment>
+                    <i
+                      className="far fa-id-badge header__icon cursor-pointer mr-3"
+                      onClick={handleGoToProfilePage}
+                    ></i>
+                    <i
+                      className="far fa-comment-dots header__icon cursor-pointer mr-3"
+                      onClick={handleGotoChatPage}
+                    ></i>
+                  </Fragment>
+                )}
                 <FriendInvitationsPopUp
                   trigger={
                     <i
-                      className="fas fa-users header__icon  cursor-pointer"
+                      className="fas fa-users header__icon  cursor-pointer mr-3"
                       onClick={handleOpenToolTip}
                     ></i>
                   }
@@ -43,12 +58,12 @@ const Main = ({
                     {friendInvitations.length}
                   </span>
                 )}
-              </div>
 
-              <i
-                className="fas fa-sign-out-alt header__icon cursor-pointer col-6"
-                onClick={handleLogOut}
-              ></i>
+                <i
+                  className="fas fa-sign-out-alt header__icon cursor-pointer "
+                  onClick={handleLogOut}
+                ></i>
+              </div>
             </div>
           </div>
         </div>

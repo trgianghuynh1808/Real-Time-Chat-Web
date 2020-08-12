@@ -12,6 +12,8 @@ import { clearUserProfileStore } from "features/Profile/userProfileSlice";
 import { relationshipAsync } from "components/Header/friendInvitationsSlice";
 import { RELATIONSHIP_STATUS } from "enums";
 import { friendListAsync } from "components/FriendList/friendListSlice";
+import { clearConverstationStore } from "features/Chat/converstationSlice";
+import { clearCurFriendStore } from "components/FriendList/curFriendSlice";
 
 const Header = () => {
   const socket = io(process.env.REACT_APP_WS_SERVER_URL);
@@ -58,6 +60,21 @@ const Header = () => {
     );
   };
 
+  const clearStores = () => {
+    dispatch(clearConverstationStore());
+    dispatch(clearCurFriendStore());
+  };
+
+  const handleGoToProfilePage = () => {
+    history.push("/profile");
+    clearStores();
+  };
+
+  const handleGotoChatPage = () => {
+    history.push("/chat");
+    clearStores();
+  };
+
   return (
     <div className="header">
       <Main
@@ -66,6 +83,8 @@ const Header = () => {
         friendInvitations={friendInvitations}
         handleAcceptFriendInvitation={handleAcceptFriendInvitation}
         handleDeclinedFriendInvitation={handleDeclinedFriendInvitation}
+        handleGoToProfilePage={handleGoToProfilePage}
+        handleGotoChatPage={handleGotoChatPage}
       />
     </div>
   );

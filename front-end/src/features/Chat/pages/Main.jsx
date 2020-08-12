@@ -5,7 +5,6 @@ import { isEmpty } from "lodash/fp";
 
 import ChatDetail from "../components/ChatDetail";
 import { messageAsync, createMessage } from "../converstationSlice";
-import FriendList from "components/FriendList";
 
 const scrollToBottom = () => {
   const chatHistoryEle = document.getElementById("last-msg");

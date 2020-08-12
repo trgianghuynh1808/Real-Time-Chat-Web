@@ -7,7 +7,8 @@ import InfoUser from "./components/InfoUser";
 import ListItemMenu from "./components/ListItemMenu";
 import { MENU_ITEM_LIST } from "constants/global";
 import { userAsync } from "features/Login/userSlice";
-import { clearStore } from "features/Chat/converstationSlice";
+import { clearConverstationStore } from "features/Chat/converstationSlice";
+import { clearCurFriendStore } from "components/FriendList/curFriendSlice";
 
 const VerticalBar = () => {
   const dispatch = useDispatch();
@@ -20,7 +21,8 @@ const VerticalBar = () => {
   }, [dispatch, curUser]);
 
   const handleClearStore = () => {
-    dispatch(clearStore());
+    dispatch(clearConverstationStore());
+    dispatch(clearCurFriendStore());
   };
 
   return (
