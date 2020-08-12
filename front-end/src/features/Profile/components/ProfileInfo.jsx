@@ -75,7 +75,7 @@ const ProfileInfo = ({
           </div>
         </div>
         <div className="row justify-content-center mt-3">
-          <div className="input-group col-6 col-md-3">
+          <div className="input-group col-6 col-md-3 col-lg-5">
             <input
               type="text"
               className="form-control text-center py-2 border-right-0 border"
@@ -95,9 +95,9 @@ const ProfileInfo = ({
             </span>
           </div>
         </div>
-        <div className="container">
+        <div className="container-fluid">
           <div className="row info-user-wrp row justify-content-center">
-            <div className="col-md-4 border-right ">
+            <div className="col-md-4 col-lg-12  ">
               <h6 className="font-weight-bold text-capitalize text-center">
                 Thông tin tài khoản
               </h6>
@@ -157,7 +157,7 @@ const ProfileInfo = ({
             >
               {formikProps => {
                 return (
-                  <div className="col-md-4">
+                  <div className="col-md-4 col-lg-12 change-password-wrp">
                     <h6 className="font-weight-bold text-capitalize text-center">
                       Đổi mật khẩu
                     </h6>

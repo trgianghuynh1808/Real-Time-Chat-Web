@@ -1,5 +1,5 @@
 import React from "react";
-import { isBrowser } from "react-device-detect";
+import { isBrowser, isMobile } from "react-device-detect";
 
 import VerticalBar from "components/VerticalBar";
 import Header from "components/Header";
@@ -9,17 +9,24 @@ const Layout = ({ children }) => {
   return (
     <div className="row">
       {isBrowser && (
-        <div className="col-md-2 pr-0">
+        <div className="col-lg-3 pr-0">
           <VerticalBar />
         </div>
       )}
-      <div className="col-12 col-md-10 none-padding">
+      <div className="col-12 col-md-9  none-padding">
         <Header />
         <div className="container-fluid">
           <div className="row">
-            <div className="col-12 col-md-9 none-padding">{children}</div>
+            {isMobile && (
+              <div className="col-12 col-md-3 none-padding">
+                <FriendList />
+              </div>
+            )}
+            <div className="col-12 col-md-9 col-lg-8 none-padding">
+              {children}
+            </div>
             {isBrowser && (
-              <div className="col-md-3 none-padding">
+              <div className="col-md-3 col-lg-4 none-padding">
                 <FriendList />
               </div>
             )}

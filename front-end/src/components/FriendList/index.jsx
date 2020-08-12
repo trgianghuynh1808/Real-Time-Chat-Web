@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import io from "socket.io-client";
+import { isMobile } from "react-device-detect";
 
 import "./style.scss";
 import FriendListComponent from "./components/FriendList";
+import FriendListMobileComponent from "./components/FriendListMobile";
 import SearchBar from "./components/SearchBar";
 import userApi from "api/userApi";
 import relationshipApi from "api/relationshipApi";
@@ -52,11 +54,19 @@ const FriendList = () => {
         handleSearch={handleSearch}
         handleAddFriend={handleAddFriend}
       />
-      <FriendListComponent
-        friendList={friendList}
-        handleSelectConverstation={handleSelectConverstation}
-        curFriend={curFriend}
-      />
+      {isMobile ? (
+        <FriendListMobileComponent
+          friendList={friendList}
+          handleSelectConverstation={handleSelectConverstation}
+          curFriend={curFriend}
+        />
+      ) : (
+        <FriendListComponent
+          friendList={friendList}
+          handleSelectConverstation={handleSelectConverstation}
+          curFriend={curFriend}
+        />
+      )}
     </div>
   );
 };

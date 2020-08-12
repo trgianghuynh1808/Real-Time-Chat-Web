@@ -25,7 +25,7 @@ const Main = ({
             <i className="far fa-calendar-alt calender-icon"></i>
             <span className="ml-3">{curDate}</span>
           </div>
-          <div className="col-6 col-md-1 ">
+          <div className="col-6 col-md-1 col-lg-2 ">
             <div className="row justify-content-end">
               <div className="d-flex position-relative col-10 col-md-11 ">
                 {isMobile && (
