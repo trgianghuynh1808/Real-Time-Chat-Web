@@ -1,11 +1,6 @@
 # Real time Chat Web
 
-### Demo
-
-* Youtube: [https://youtu.be/alDSrNFFcr8](https://youtu.be/alDSrNFFcr8)
-
-
-### Tech
+### Tech Stack
 
 * **Front-End**: React-Hook, Redux-Toolkit, SCSS, Bootstrap.
 * **Back-End**: Nodejs, Mongoose, Web Socket.
